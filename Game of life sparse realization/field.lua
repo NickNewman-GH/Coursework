@@ -31,7 +31,6 @@ function Field:draw()
 end
 
 function Field:update()
-    -- self.cells = self:nextGeneration()
     self:nextGeneration()
 end
 
@@ -68,26 +67,6 @@ function Field:nextGeneration()
             end
         end
     end
-
-    -- 1 таблица со всеми клетками (1), вторая с количеством соседей по индексу каждой.
-    -- for i=1,self.height do
-    --     table.insert(newField, {})
-    --     for j=1,self.width do
-    --         if j == 1 or j == self.width or i == 1 or i == self.height then
-    --             newField[i][j] = 0
-    --         else
-    --             local neighbors = self:countNeighbors(i, j)
-    --             if self.cells[i][j] == 1 and (neighbors > 3 or neighbors < 2) then
-    --                 newField[i][j] = 0
-    --             elseif self.cells[i][j] == 0 and neighbors == 3 then
-    --                 newField[i][j] = 1
-    --             else
-    --                 newField[i][j] = self.cells[i][j]
-    --             end
-    --         end
-    --     end
-    -- end
-    -- return newField
 end
 
 function Field:getNeighbors(y, x)
@@ -101,14 +80,6 @@ function Field:getNeighbors(y, x)
     if y - 1 > 1 and x - 1 > 1 then table.insert(neighbors, Cell(y - 1, x - 1)) end
     if x + 1 < self.width - 1 and y + 1 < self.height - 1 then table.insert(neighbors, Cell(y + 1, x + 1)) end
     return neighbors
-    -- local neighbors = self.cells[y][x]
-    -- for i=-1,1 do
-    --     for j=-1,1 do
-    --         neighbors = neighbors - self.cells[y + i][x + j]
-    --     end
-    -- end
-    -- neighbors = -neighbors
-    -- return neighbors
 end
 
 function Field:sizesComputing(windowWidth, windowHeight)

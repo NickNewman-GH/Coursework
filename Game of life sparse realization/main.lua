@@ -20,11 +20,6 @@ function love.load()
 end
 
 function love.update(dt)
-    -- field:generate()
-    
-    -- if dt < 1/fps then
-    --     love.timer.sleep(1/fps - dt)
-    -- end
     field:update()
 end
 

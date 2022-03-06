@@ -29,29 +29,12 @@ function Field:generate()
 end
 
 function Field:draw()
-    -- love.graphics.setColor({0.7, 0.7, 0.7})
-    -- if self.widthOffset > 0 then
-    --     love.graphics.rectangle("fill", 0, 0, self.widthOffset, windowHeight)
-    --     love.graphics.rectangle("fill", windowWidth - self.widthOffset, 0, self.widthOffset, windowHeight)
-    -- elseif self.heightOffset > 0 then
-    --     love.graphics.rectangle("fill", 0, 0, windowHeight, self.heightOffset)
-    --     love.graphics.rectangle("fill", 0, windowHeight - self.heightOffset, windowWidth, self.heightOffset)
-    -- end
     for i, row in ipairs(self.field) do
         for j, cell in ipairs(row) do
             if not (cell == 0) then
                 love.graphics.setColor({0,0,0})
                 love.graphics.rectangle("fill", self.widthOffset + self.sideSize * (j - 1), self.heightOffset + self.sideSize * (i - 1), self.sideSize, self.sideSize)
             end
-            
-            -- if cell == 0 then
-            --     love.graphics.setColor({0,0,0})
-            -- else
-            --     love.graphics.setColor({1,1,1})
-            -- end
-            -- if not (j == 1 or j == self.width or i == 1 or i == self.height) then
-            --     love.graphics.print(tostring(self:countNeighbors(i, j)), w * (j - 1), h * (i - 1))
-            -- end
         end
     end
 end

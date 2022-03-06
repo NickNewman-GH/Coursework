@@ -7,17 +7,9 @@ function love.load()
 
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
-
-    -- love.graphics.setBackgroundColor({0, 0, 0})
     
     field = Field(500, 500)
     fullscreen = false
-
-    -- mouseX, mouseY = love.mouse.getPosition()
-
-    -- love.mouse.setVisible(false)
-
-    -- fps = 60
 
     ---
     fieldX, fieldY = 0, 0
@@ -33,11 +25,6 @@ function love.update(dt)
         fieldY = math.floor((mouseY - field.heightOffset) / field.sideSize)
         ---
     end
-    -- field:generate()
-    
-    -- if dt < 1/fps then
-    --     love.timer.sleep(1/fps - dt)
-    -- end
     field:update(dt)
 end
 

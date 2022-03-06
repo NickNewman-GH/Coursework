@@ -15,20 +15,9 @@ function love.load()
     
     field = Field(200, 200, cellCoordinates)
     fullscreen = false
-
-    -- mouseX, mouseY = love.mouse.getPosition()
-
-    -- love.mouse.setVisible(false)
-
-    -- fps = 60
 end
 
 function love.update(dt)
-    -- field:generate()
-    
-    -- if dt < 1/fps then
-    --     love.timer.sleep(1/fps - dt)
-    -- end
     field:update()
 end
 
