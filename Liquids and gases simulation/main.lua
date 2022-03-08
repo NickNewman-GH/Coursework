@@ -4,11 +4,12 @@ function love.load()
     require "element"
     require "sand"
     require "water"
+    require "stone"
 
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
     
-    field = Field(500, 500)
+    field = Field(300, 300)
     fullscreen = false
 
     ---
@@ -19,11 +20,6 @@ end
 function love.update(dt)
     if love.mouse.isDown(1) then
         field:addElement(love.mouse.getPosition())
-        ---
-        mouseX, mouseY = love.mouse.getPosition()
-        fieldX = math.floor((mouseX - field.widthOffset) / field.sideSize)
-        fieldY = math.floor((mouseY - field.heightOffset) / field.sideSize)
-        ---
     end
     field:update(dt)
 end
@@ -44,9 +40,6 @@ function love.draw()
     love.graphics.print("Field width: "..tostring(field.width), 10, 50)
     love.graphics.print("Window width: "..tostring(windowWidth), 10, 70)
     love.graphics.print("Window height: "..tostring(windowHeight), 10, 90)
-    ---
-    -- love.graphics.print("Mouse position on field: "..tostring(fieldX + 1).."; "..tostring(fieldY + 1), 10, 110)
-    ---
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -56,10 +49,14 @@ function love.keypressed(key, scancode, isrepeat)
         love.resize(love.graphics.getDimensions())
     elseif key == "r" then
         field.field = field:newField()
+    elseif key == "space" then
+        field:update(dt)
     elseif key == "1" then
         field.createdElement = Water
     elseif key == "2" then
         field.createdElement = Sand
+    elseif key == "3" then
+        field.createdElement = Stone
     end
 end
 

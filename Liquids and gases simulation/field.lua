@@ -4,7 +4,7 @@ function Field:new(width, height)
     self.width = width
     self.height = height
 
-    self.field = self:newField()    
+    self.field = self:newField()
 
     self.sideSize = 0
     self.widthOffset = 0
@@ -39,7 +39,7 @@ end
 
 function Field:update(dt)
     local newField = self:newField()
-    for i=#self.field,1,-1 do
+    for i=1,#self.field do
         for j=1,#self.field[i] do
             local cell = self.field[i][j]
             if not (cell == 0) then
@@ -74,8 +74,18 @@ function Field:addElement(mouseX, mouseY)
     else
         local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
         local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
-        if self.field[fieldY][fieldX] == 0 then
-            self.field[fieldY][fieldX] = self.createdElement(fieldX, fieldY)
+        ---
+        for i=-5,5 do
+            for j=-5,5 do
+                if self.field[fieldY+i][fieldX+j] == 0 then
+                    self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+i, fieldY+j)
+                end
+            end
         end
+        ---
+
+        -- if self.field[fieldY][fieldX] == 0 then
+        --     self.field[fieldY][fieldX] = self.createdElement(fieldX, fieldY)
+        -- end
     end
 end
