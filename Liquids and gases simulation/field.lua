@@ -75,8 +75,8 @@ function Field:addElement(mouseX, mouseY)
         local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
         local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
         ---
-        for i=-5,5 do
-            for j=-5,5 do
+        for i=-4,4 do
+            for j=-4,4 do
                 if self.field[fieldY+i][fieldX+j] == 0 then
                     self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+i, fieldY+j)
                 end
