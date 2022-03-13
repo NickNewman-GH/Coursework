@@ -6,10 +6,10 @@ function Sand:new(x, y)
 end
 
 function Sand:update(fieldClass, newField, dt)
-    isLowerBound = self.y == fieldClass.height
+    local isLowerBound = self.y == fieldClass.height
 
     if not isLowerBound then
-        isDownReachable = self.y < fieldClass.height and 
+        local isDownReachable = self.y < fieldClass.height and 
         (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
         if isDownReachable then
             for i=1,self.gravity do
@@ -22,19 +22,16 @@ function Sand:update(fieldClass, newField, dt)
                 end
             end
         else
-            isDownLeftReachable = self.x - 1 > 0 and 
+            local isDownLeftReachable = self.x - 1 > 0 and 
             (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
             
-            isDownRightReachable = self.x + 1 <= fieldClass.width and 
+            local isDownRightReachable = self.x + 1 <= fieldClass.width and 
             (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
 
             if isDownLeftReachable and isDownRightReachable then
                 self.y = self.y + 1
-                if love.math.random(0,1) == 0 then 
-                    self.x = self.x - 1
-                else
-                    self.x = self.x + 1
-                end
+                local coordChange = {-1, 1}
+                self.x = self.x + coordChange[love.math.random(1,2)]
             elseif isDownLeftReachable then
                 self.y = self.y + 1
                 self.x = self.x - 1
