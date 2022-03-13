@@ -9,7 +9,7 @@ function love.load()
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
     
-    field = Field(300, 300)
+    field = Field(250, 250)
     fullscreen = false
 
     ---
