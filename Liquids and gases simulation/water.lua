@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 3
+    self.dispersionRate = 15
 end
 
 function Water:update(fieldClass, newField, dt)
