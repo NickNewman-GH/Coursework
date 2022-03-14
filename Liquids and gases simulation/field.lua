@@ -12,6 +12,8 @@ function Field:new(width, height)
     self:sizesComputing(love.graphics.getDimensions())
 
     self.createdElement = Sand
+
+    self.cellCreatedAreaSideSize = 4
 end
 
 function Field:newField()
@@ -75,10 +77,13 @@ function Field:addElement(mouseX, mouseY)
         local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
         local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
         ---
-        for i=-4,4 do
-            for j=-4,4 do
-                if self.field[fieldY+i][fieldX+j] == 0 then
-                    self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+i, fieldY+j)
+        sideSize = math.floor(self.cellCreatedAreaSideSize/2)
+        for i=-sideSize,sideSize do
+            if fieldY+i < self.height and fieldY+i > 0 then
+                for j=-sideSize,sideSize do
+                    if fieldX+j < self.width and fieldX+j > 0 and self.field[fieldY+i][fieldX+j] == 0 then
+                        self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+j, fieldY+i)
+                    end
                 end
             end
         end

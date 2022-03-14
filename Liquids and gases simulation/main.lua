@@ -64,3 +64,11 @@ function love.resize(w, h)
     windowWidth, windowHeight = w, h
     field:sizesComputing(w, h)
 end
+
+function love.wheelmoved(x, y)
+    if y > 0 and field.cellCreatedAreaSideSize < 20 then
+        field.cellCreatedAreaSideSize = field.cellCreatedAreaSideSize + 1
+    elseif y < 0 and field.cellCreatedAreaSideSize > -2 then
+        field.cellCreatedAreaSideSize = field.cellCreatedAreaSideSize - 1
+    end
+end
