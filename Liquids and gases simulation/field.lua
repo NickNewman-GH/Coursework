@@ -13,7 +13,7 @@ function Field:new(width, height)
 
     self.createdElement = Water
 
-    self.creationAreaSideSize = 4
+    self.creationAreaSideSize = 10
 end
 
 function Field:newField()
