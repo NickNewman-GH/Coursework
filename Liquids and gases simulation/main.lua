@@ -38,8 +38,14 @@ function love.draw()
     love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
     love.graphics.print("Field height: "..tostring(field.height), 10, 30)
     love.graphics.print("Field width: "..tostring(field.width), 10, 50)
-    love.graphics.print("Window width: "..tostring(windowWidth), 10, 70)
-    love.graphics.print("Window height: "..tostring(windowHeight), 10, 90)
+    -- love.graphics.print("Window width: "..tostring(windowWidth), 10, 70)
+    -- love.graphics.print("Window height: "..tostring(windowHeight), 10, 90)
+    love.graphics.print("Key Assignment:", 10, 80)
+    love.graphics.print("1 - water (by default)", 10, 100)
+    love.graphics.print("2 - sand", 10, 120)
+    love.graphics.print("3 - stone", 10, 140)
+    love.graphics.print("Mwheel up - larger particle creation area", 10, 160)
+    love.graphics.print("Mwheel down - smaller particle creation area", 10, 180)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -66,9 +72,9 @@ function love.resize(w, h)
 end
 
 function love.wheelmoved(x, y)
-    if y > 0 and field.cellCreatedAreaSideSize < 20 then
-        field.cellCreatedAreaSideSize = field.cellCreatedAreaSideSize + 1
-    elseif y < 0 and field.cellCreatedAreaSideSize > -2 then
-        field.cellCreatedAreaSideSize = field.cellCreatedAreaSideSize - 1
+    if y > 0 and field.creationAreaSideSize < 20 then
+        field.creationAreaSideSize = field.creationAreaSideSize + 1
+    elseif y < 0 and field.creationAreaSideSize > -2 then
+        field.creationAreaSideSize = field.creationAreaSideSize - 1
     end
 end
