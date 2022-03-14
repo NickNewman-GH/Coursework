@@ -19,7 +19,9 @@ end
 
 function love.update(dt)
     if love.mouse.isDown(1) then
-        field:addElement(love.mouse.getPosition())
+        field:addElements(love.mouse.getPosition())
+    elseif love.mouse.isDown(2) then
+        field:removeElements(love.mouse.getPosition())
     end
     field:update(dt)
 end
@@ -47,7 +49,9 @@ function love.draw()
     love.graphics.print("Mwheel up - larger particle creation area", 10, 160)
     love.graphics.print("Mwheel down - smaller particle creation area", 10, 180)
     love.graphics.print("R - Clear field", 10, 200)
-    love.graphics.print("F11 - Full screen mode", 10, 220)
+    love.graphics.print("F11 - Full screen/Windowed mode", 10, 220)
+    love.graphics.print("Lmouse button - Create particles", 10, 240)
+    love.graphics.print("Rmouse button - Delete particles", 10, 260)
 end
 
 function love.keypressed(key, scancode, isrepeat)

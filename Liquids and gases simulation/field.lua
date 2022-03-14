@@ -68,29 +68,34 @@ function Field:sizesComputing(windowWidth, windowHeight)
     end
 end
 
-function Field:addElement(mouseX, mouseY)
-    if self.widthOffset > 0 and (mouseX > self.widthOffset and mouseX < (self.width - self.widthOffset)) then
-        return
-    elseif self.heightOffset > 0 and (mouseY > self.heightOffset and mouseY < (self.height - self.heightOffset)) then
-        return
-    else
-        local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
-        local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
-        ---
-        sideSize = math.floor(self.creationAreaSideSize/2)
-        for i=-sideSize,sideSize do
-            if fieldY+i < self.height and fieldY+i > 0 then
-                for j=-sideSize,sideSize do
-                    if fieldX+j < self.width and fieldX+j > 0 and self.field[fieldY+i][fieldX+j] == 0 then
-                        self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+j, fieldY+i)
-                    end
+function Field:addElements(mouseX, mouseY)
+    local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
+    local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
+
+    sideSize = math.floor(self.creationAreaSideSize/2)
+    for i=-sideSize,sideSize do
+        if fieldY+i <= self.height and fieldY+i > 0 then
+            for j=-sideSize,sideSize do
+                if fieldX+j <= self.width and fieldX+j > 0 and self.field[fieldY+i][fieldX+j] == 0 then
+                    self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+j, fieldY+i)
                 end
             end
         end
-        ---
+    end
+end
 
-        -- if self.field[fieldY][fieldX] == 0 then
-        --     self.field[fieldY][fieldX] = self.createdElement(fieldX, fieldY)
-        -- end
+function Field:removeElements(mouseX, mouseY)
+    local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
+    local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
+
+    sideSize = math.floor(self.creationAreaSideSize/2)
+    for i=-sideSize,sideSize do
+        if fieldY+i <= self.height and fieldY+i > 0 then
+            for j=-sideSize,sideSize do
+                if fieldX+j <= self.width and fieldX+j > 0 then
+                    self.field[fieldY+i][fieldX+j] = 0
+                end
+            end
+        end
     end
 end
