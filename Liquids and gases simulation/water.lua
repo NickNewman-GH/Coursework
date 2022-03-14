@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 25
+    self.dispersionRate = 5
 end
 
 function Water:update(fieldClass, newField, dt)
@@ -48,36 +48,15 @@ function Water:update(fieldClass, newField, dt)
                 (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
                 isRightReachable = self.x + 1 <= fieldClass.width and 
                 (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-                if isLeftReachable and isRightReachable then
-                    local choice = love.math.random(0,1)
-                    for i=1,self.dispersionRate do
-                        if choice == 0 then
-                            self.x = self.x - 1
-                            isLeftReachable = self.x - 1 > 0 and 
-                            (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                            if not isLeftReachable then
-                                break
-                            end
-                        else
-                            self.x = self.x + 1
-                            isRightReachable = self.x + 1 <= fieldClass.width and 
-                            (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-                            isDownRightReachable = self.x + 1 <= fieldClass.width and 
-                            (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
-                            if not isRightReachable then
-                                break
-                            end
-                        end 
-                        if fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0 then
-                            break
-                        end
-                    end
-                elseif isLeftReachable then
+                if isLeftReachable then
                     for i=1,self.dispersionRate do
                         self.x = self.x - 1
                         isLeftReachable = self.x - 1 > 0 and 
                         (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
                         if not isLeftReachable then
+                            break
+                        end
+                        if fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0 then
                             break
                         end
                     end
@@ -87,6 +66,9 @@ function Water:update(fieldClass, newField, dt)
                         isRightReachable = self.x + 1 <= fieldClass.width and 
                         (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
                         if not isRightReachable then
+                            break
+                        end
+                        if fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0 then
                             break
                         end
                     end
