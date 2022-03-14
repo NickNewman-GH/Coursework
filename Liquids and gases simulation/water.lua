@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 5
+    self.dispersionRate = 10
 end
 
 function Water:update(fieldClass, newField, dt)
@@ -11,66 +11,64 @@ function Water:update(fieldClass, newField, dt)
     isLowerBound = self.y == fieldClass.height
 
     if not isLowerBound then
-        isDownReachable = self.y < fieldClass.height and 
-        (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+        isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
         if isDownReachable then
             for i=1,self.gravity do
                 self.y = self.y + 1
-                isDownReachable = self.y < fieldClass.height and 
-                (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+                isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                 isLowerBound = self.y == fieldClass.height
-                if (not isDownReachable) or isLowerBound then
-                    break
-                end
+                if (not isDownReachable) or isLowerBound then break end
             end
         else
-            isDownLeftReachable = self.x - 1 > 0 and 
-            (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
-            
-            isDownRightReachable = self.x + 1 <= fieldClass.width and 
-            (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+            isDownLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+            isDownRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+            isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+            isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+
+            local sideChoice = -1
 
             if isDownLeftReachable and isDownRightReachable then
-                self.y = self.y + 1
-                if love.math.random(0,1) == 0 then 
-                    self.x = self.x - 1
-                else
-                    self.x = self.x + 1
-                end
+                sideChoice = love.math.random(0,1)
             elseif isDownLeftReachable then
-                self.y = self.y + 1
-                self.x = self.x - 1
+                sideChoice = 0
             elseif isDownRightReachable then
-                self.y = self.y + 1
-                self.x = self.x + 1
-            else
-                isLeftReachable = self.x - 1 > 0 and 
-                (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                isRightReachable = self.x + 1 <= fieldClass.width and 
-                (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-                if isLeftReachable then
-                    for i=1,self.dispersionRate do
+                sideChoice = 1
+            -- elseif isLeftReachable and isRightReachable then
+            --     sideChoice = love.math.random(0,1)
+            elseif isLeftReachable then
+                sideChoice = 0
+            elseif isRightReachable then
+                sideChoice = 1
+            end
+            
+            if sideChoice == 0 then
+                for i=1,self.dispersionRate do
+                    if isDownLeftReachable then
+                        self.y = self.y + 1
                         self.x = self.x - 1
-                        isLeftReachable = self.x - 1 > 0 and 
-                        (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                        if not isLeftReachable then
-                            break
-                        end
-                        if fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0 then
-                            break
-                        end
+                    elseif isLeftReachable then
+                        self.x = self.x - 1
                     end
-                elseif isRightReachable then
-                    for i=1,self.dispersionRate do
+                    isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+                    isDownLeftReachable = self.y < fieldClass.height and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+                    isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+                    if isDownReachable then
+                        break
+                    end
+                end
+            elseif sideChoice == 1 then
+                for i=1,self.dispersionRate do
+                    if isDownRightReachable then
+                        self.y = self.y + 1
                         self.x = self.x + 1
-                        isRightReachable = self.x + 1 <= fieldClass.width and 
-                        (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-                        if not isRightReachable then
-                            break
-                        end
-                        if fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0 then
-                            break
-                        end
+                    elseif isRightReachable then
+                        self.x = self.x + 1
+                    end
+                    isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+                    isDownRightReachable = self.y < fieldClass.height and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+                    isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+                    if isDownReachable or not (isDownRightReachable or isRightReachable) then
+                        break
                     end
                 end
             end
