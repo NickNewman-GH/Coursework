@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 15
+    self.dispersionRate = 30
 end
 
 function Water:update(fieldClass, newField, dt)
@@ -28,7 +28,7 @@ function Water:update(fieldClass, newField, dt)
             if isDownLeftReachable and isDownRightReachable then sideChoice = love.math.random(0,1)
             elseif isDownLeftReachable then sideChoice = 0
             elseif isDownRightReachable then sideChoice = 1
-            -- elseif isLeftReachable and isRightReachable then sideChoice = -1
+            --elseif isLeftReachable and isRightReachable then sideChoice = -1
             elseif isLeftReachable then sideChoice = 0
             elseif isRightReachable then sideChoice = 1
             end
