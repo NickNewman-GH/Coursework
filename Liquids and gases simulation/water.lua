@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 10
+    self.dispersionRate = field.width / 10
 end
 
 function Water:update(fieldClass, newField, dt)
@@ -19,6 +19,63 @@ function Water:update(fieldClass, newField, dt)
                 if (not isDownReachable) or isLowerBound then break end
             end
         else
+            -- local isNotLeftBound = self.x - 1 > 0
+            -- local isNotRightBound = self.x + 1 <= fieldClass.width
+            -- local isDownLeftReachable = isNotLeftBound and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+            -- local isDownRightReachable = isNotRightBound and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+
+            -- if isDownLeftReachable and isDownRightReachable then
+            --     self.y = self.y + 1
+            --     local sideChoice = love.math.random(0,1)
+            --     if sideChoice == 0 then self.x = self.x - 1
+            --     else self.x = self.x + 1 end
+            -- elseif isDownLeftReachable then 
+            --     self.y = self.y + 1
+            --     self.x = self.x - 1
+            -- elseif isDownRightReachable then 
+            --     self.y = self.y + 1
+            --     self.x = self.x + 1
+            -- else
+            --     local isLeftReachable = isNotLeftBound and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+            --     local isRightReachable = isNotRightBound and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+            --     local sideChoice = -1
+
+            --     if isLeftReachable and isRightReachable then sideChoice = love.math.random(0,1)
+            --     elseif isLeftReachable then sideChoice = 0
+            --     elseif isRightReachable then sideChoice = 1
+            --     end
+                
+            --     if sideChoice == 0 then
+            --         for i=1,self.dispersionRate do
+            --             if isLeftReachable then
+            --                 self.x = self.x - 1
+            --             end
+            --             isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+            --             isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+            --             if isDownReachable or (not isLeftReachable) then
+            --                 break
+            --             end
+            --         end
+            --     elseif sideChoice == 1 then
+            --         for i=1,self.dispersionRate do
+            --             if isRightReachable then
+            --                 self.x = self.x + 1
+            --             end
+            --             isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+            --             isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+            --             if isDownReachable or (not isRightReachable) then
+            --                 break
+            --             end
+            --         end
+            --     end
+            -- end
+
+
+
+            -------------------------
+
+
+
             local isDownLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
             local isDownRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
             local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
@@ -64,6 +121,10 @@ function Water:update(fieldClass, newField, dt)
                     end
                 end
             end
+
+
+
+            ---------------------
         end
     else
         local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
