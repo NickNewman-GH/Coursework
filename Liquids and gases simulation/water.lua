@@ -25,8 +25,8 @@ function Water:update(fieldClass, newField, dt)
             local isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
             local sideChoice = -1
 
-            if isDownLeftReachable and isDownRightReachable then sideChoice = love.math.random(0,1)
-            elseif isDownLeftReachable then sideChoice = 0
+            --if isDownLeftReachable and isDownRightReachable then sideChoice = love.math.random(0,1)
+            if isDownLeftReachable then sideChoice = 0
             elseif isDownRightReachable then sideChoice = 1
             --elseif isLeftReachable and isRightReachable then sideChoice = -1
             elseif isLeftReachable then sideChoice = 0

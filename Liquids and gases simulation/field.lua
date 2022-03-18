@@ -5,6 +5,7 @@ function Field:new(width, height)
     self.height = height
 
     self.field = self:newField()
+    self.updateOrder = self:generateUpdateOrderArray()
 
     self.sideSize = 0
     self.widthOffset = 0
@@ -41,12 +42,12 @@ end
 
 function Field:update(dt)
     local newField = self:newField()
-    for i=1,#self.field do
-        for j=1,#self.field[i] do
-            local cell = self.field[i][j]
-            if not (cell == 0) then
-                cell:update(self, newField, dt)
-            end
+    self:shuffleUpdateOrder()
+    for i=1,#self.updateOrder do
+        local coords = self.updateOrder[i]
+        local cell = self.field[coords[1]][coords[2]]
+        if not (cell == 0) then
+            cell:update(self, newField, dt)
         end
     end
     self.field = newField
@@ -98,4 +99,21 @@ function Field:removeElements(mouseX, mouseY)
             end
         end
     end
+end
+
+function Field:generateUpdateOrderArray()
+    array = {}
+    for i=1,self.height do
+        for j=1,self.width do
+            table.insert(array, {i, j})
+        end
+    end
+    return array
+end
+
+function Field:shuffleUpdateOrder()
+    for i = #self.updateOrder, 2, -1 do
+		local j = love.math.random(i)
+		self.updateOrder[i], self.updateOrder[j] = self.updateOrder[j], self.updateOrder[i]
+	end
 end
