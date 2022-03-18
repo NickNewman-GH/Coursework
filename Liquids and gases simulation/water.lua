@@ -44,7 +44,7 @@ function Water:update(fieldClass, newField, dt)
                     isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                     isDownLeftReachable = self.y < fieldClass.height and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
                     isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                    if isDownReachable then
+                    if isDownReachable or not (isDownLeftReachable or isLeftReachable) then
                         break
                     end
                 end
