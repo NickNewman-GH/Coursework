@@ -13,7 +13,7 @@ function love.load()
     fullscreen = false
 
     ---
-    fieldX, fieldY = 0, 0
+    -- fieldX, fieldY = 0, 0
     ---
 end
 
@@ -80,7 +80,7 @@ end
 function love.wheelmoved(x, y)
     if y > 0 and field.creationAreaSideSize < 20 then
         field.creationAreaSideSize = field.creationAreaSideSize + 1
-    elseif y < 0 and field.creationAreaSideSize > -2 then
+    elseif y < 0 and field.creationAreaSideSize > -1 then
         field.creationAreaSideSize = field.creationAreaSideSize - 1
     end
 end
