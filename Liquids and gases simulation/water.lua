@@ -3,20 +3,41 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = field.width / 10
+    self.dispersionRate = 5--field.width / 20
+    --self.movingChance = 10
 end
 
 function Water:update(fieldClass, newField, dt)
     local isLowerBound = self.y == fieldClass.height
 
     if not isLowerBound then
-        local isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+        local isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
         if isDownReachable then
-            for i=1,self.gravity do
-                self.y = self.y + 1
+            for i=1,(self.gravity - love.math.random(-1,1)) do
+                if isDownReachable and love.math.random(100) > 5 then
+                    self.y = self.y + 1
+                    -- if not isDownReachable then break end
+                else
+                    local isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+                    local isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+                    if isDownLeftReachable and isDownRightReachable then
+                        self.y = self.y + 1
+                        local sideChoice = love.math.random(0,1)
+                        if sideChoice == 0 then self.x = self.x - 1
+                        else self.x = self.x + 1 end
+                    elseif isDownLeftReachable then 
+                        self.y = self.y + 1
+                        self.x = self.x - 1
+                    elseif isDownRightReachable then 
+                        self.y = self.y + 1
+                        self.x = self.x + 1
+                    else
+                        break
+                    end
+                end
                 isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                 isLowerBound = self.y == fieldClass.height
-                if (not isDownReachable) or isLowerBound then break end
+                if isLowerBound then break end
             end
         else
             -- local isNotLeftBound = self.x - 1 > 0
