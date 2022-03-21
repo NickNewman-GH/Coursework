@@ -23,10 +23,12 @@ function love.update(dt)
     elseif love.mouse.isDown(2) then
         field:removeElements(love.mouse.getPosition())
     end
-    if love.keyboard.isDown('space') then
+    -- if love.keyboard.isDown('space') then
+    --     field:update(dt)
+    -- end
+    if not field.isPauseUpdate then
         field:update(dt)
     end
-    field:update(dt)
 end
 
 function love.draw()
@@ -49,14 +51,16 @@ function love.keypressed(key, scancode, isrepeat)
         love.resize(love.graphics.getDimensions())
     elseif key == "r" then
         field.field = field:newField()
-    elseif key == "space" then
-        field:update(dt)
+    elseif key == "p" then
+        field.isPauseUpdate = not field.isPauseUpdate
     elseif key == "1" then
         field.createdElement = Water
     elseif key == "2" then
         field.createdElement = Sand
     elseif key == "3" then
         field.createdElement = Stone
+    elseif key == "right" then
+        field:update()
     end
 end
 

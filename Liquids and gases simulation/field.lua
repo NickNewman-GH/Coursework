@@ -13,8 +13,9 @@ function Field:new(width, height)
     self:sizesComputing(love.graphics.getDimensions())
 
     self.createdElement = Water
-
     self.creationAreaSideSize = 10
+
+    self.isPauseUpdate = false
 end
 
 function Field:newField()
