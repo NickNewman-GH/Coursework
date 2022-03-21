@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 5--field.width / 20
+    self.dispersionRate = 25--field.width / 20
     --self.movingChance = 10
 end
 
@@ -12,14 +12,14 @@ function Water:update(fieldClass, newField, dt)
 
     if not isLowerBound then
         local isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
-        if isDownReachable then
+        local isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+        local isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
+        if isDownReachable or isDownRightReachable or isDownLeftReachable then
             for i=1,(self.gravity - love.math.random(-1,1)) do
                 if isDownReachable and love.math.random(100) > 5 then
                     self.y = self.y + 1
                     -- if not isDownReachable then break end
                 else
-                    local isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
-                    local isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
                     if isDownLeftReachable and isDownRightReachable then
                         self.y = self.y + 1
                         local sideChoice = love.math.random(0,1)
@@ -35,8 +35,10 @@ function Water:update(fieldClass, newField, dt)
                         break
                     end
                 end
-                isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                 isLowerBound = self.y == fieldClass.height
+                isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+                isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
+                isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
                 if isLowerBound then break end
             end
         else
@@ -112,6 +114,7 @@ function Water:update(fieldClass, newField, dt)
             end
             
             if sideChoice == 0 then
+                local energy = self.dispersionRate
                 for i=1,self.dispersionRate do
                     if isDownLeftReachable then
                         self.y = self.y + 1
@@ -122,11 +125,19 @@ function Water:update(fieldClass, newField, dt)
                     isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                     isDownLeftReachable = self.y < fieldClass.height and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
                     isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                    if isDownReachable or not (isDownLeftReachable or isLeftReachable) then
+                    if not (isDownLeftReachable or isLeftReachable) then
+                        break
+                    end
+                    energy = energy - 1
+                    if isDownReachable then
+                        energy = energy - self.dispersionRate/5
+                    end
+                    if energy < 1 then
                         break
                     end
                 end
             elseif sideChoice == 1 then
+                local energy = self.dispersionRate
                 for i=1,self.dispersionRate do
                     if isDownRightReachable then
                         self.y = self.y + 1
@@ -137,7 +148,14 @@ function Water:update(fieldClass, newField, dt)
                     isDownReachable = self.y < fieldClass.height and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
                     isDownRightReachable = self.y < fieldClass.height and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
                     isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-                    if isDownReachable or not (isDownRightReachable or isRightReachable) then
+                    if not (isDownRightReachable or isRightReachable) then
+                        break
+                    end
+                    energy = energy - 1
+                    if isDownReachable then
+                        energy = energy - self.dispersionRate/5
+                    end
+                    if energy < 1 then
                         break
                     end
                 end
