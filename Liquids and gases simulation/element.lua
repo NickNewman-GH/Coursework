@@ -4,7 +4,7 @@ function Element:new(x, y)
     self.x = x
     self.y = y
     self.color = {1, 1, 1}
-    self.gravity = 5
+    self.gravity = field.height/50 + 1
 end
 
 function Element:update(fieldClass, newField, dt)

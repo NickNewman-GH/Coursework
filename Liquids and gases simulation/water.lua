@@ -3,7 +3,7 @@ Water = Element:extend()
 function Water:new(x, y)
     Water.super.new(self, x, y)
     self.color = {0, 0.72, 0.94}
-    self.dispersionRate = 25--field.width / 20
+    self.dispersionRate = field.width / 15
     --self.movingChance = 10
 end
 
@@ -15,7 +15,11 @@ function Water:update(fieldClass, newField, dt)
         local isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
         local isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
         if isDownReachable or isDownRightReachable or isDownLeftReachable then
-            for i=1,(self.gravity - love.math.random(-1,1)) do
+            local gravRand = 0
+            if self.gravity >= 5 then
+                gravRand = love.math.random(-1,1)
+            end
+            for i=1,(self.gravity - gravRand) do
                 if isDownReachable and love.math.random(100) > 5 then
                     self.y = self.y + 1
                     -- if not isDownReachable then break end
