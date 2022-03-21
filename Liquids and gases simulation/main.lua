@@ -59,7 +59,7 @@ function love.keypressed(key, scancode, isrepeat)
         field.createdElement = Sand
     elseif key == "3" then
         field.createdElement = Stone
-    elseif key == "right" then
+    elseif key == "right" and field.isPauseUpdate then
         field:update()
     end
 end
