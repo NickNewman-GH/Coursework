@@ -8,3 +8,7 @@ end
 function Stone:update(fieldClass, newField, dt)
     newField[self.y][self.x] = self
 end
+
+function Stone:copy()
+    return Stone(self.x, self.y)
+end
