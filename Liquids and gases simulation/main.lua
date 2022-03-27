@@ -5,7 +5,8 @@ function love.load()
     require "element"
     require "sand"
     -----
-    require "sandDebug"
+    require "sandDebug1"
+    require "sandDebug2"
     -----
     require "water"
     require "stone"
@@ -13,7 +14,7 @@ function love.load()
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
     
-    field = Field(50, 50)
+    field = Field(250, 250)
     fullscreen = false
 end
 
@@ -61,7 +62,9 @@ function love.keypressed(key, scancode, isrepeat)
         field.createdElement = Stone
     -----
     elseif key == "4" then
-        field.createdElement = SandDebug
+        field.createdElement = SandDebug1
+    elseif key == "5" then
+        field.createdElement = SandDebug2
     -----
     elseif key == "right" and field.isPauseUpdate then
         field:update()

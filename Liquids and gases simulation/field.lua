@@ -5,8 +5,6 @@ function Field:new(width, height)
     self.height = height
 
     self.field = self:newField()
-    self.updateOrder = self:generateUpdateOrderArray()
-
     self.elementManager = ElementManager()
 
     self.sideSize = 0
@@ -45,7 +43,6 @@ end
 
 function Field:update(dt)
     local newField = self:newField()
-    --self:shuffleUpdateOrder()
     self.elementManager:getUpdates(self)
     self.elementManager:shuffleUpdates()
     for i=1,#self.elementManager.updates do
@@ -57,13 +54,6 @@ function Field:update(dt)
             end
         end
     end
-    -- for i=1,#self.updateOrder do
-    --     local coords = self.updateOrder[i]
-    --     local cell = self.field[coords[1]][coords[2]]
-    --     if not (cell == 0) then
-    --         cell:update(self, newField, dt)
-    --     end
-    -- end
     self.field = newField
 end
 
@@ -113,23 +103,4 @@ function Field:removeElements(mouseX, mouseY)
             end
         end
     end
-end
-
----------------------------------
-
-function Field:generateUpdateOrderArray()
-    array = {}
-    for i=1,self.height do
-        for j=1,self.width do
-            table.insert(array, {i, j})
-        end
-    end
-    return array
-end
-
-function Field:shuffleUpdateOrder()
-    for i = #self.updateOrder, 2, -1 do
-		local j = love.math.random(i)
-		self.updateOrder[i], self.updateOrder[j] = self.updateOrder[j], self.updateOrder[i]
-	end
 end
