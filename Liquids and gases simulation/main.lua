@@ -4,9 +4,12 @@ function love.load()
     require "field"
     require "element"
     require "sand"
+    require "liquid"
+    require "oil"
+    require "slime"
     -----
-    require "sandDebug1"
-    require "sandDebug2"
+    require "sand1"
+    require "sand2"
     -----
     require "water"
     require "stone"
@@ -14,7 +17,7 @@ function love.load()
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
     
-    field = Field(100, 100)
+    field = Field(150, 150)
     fullscreen = false
 end
 
@@ -57,14 +60,18 @@ function love.keypressed(key, scancode, isrepeat)
     elseif key == "1" then
         field.createdElement = Water
     elseif key == "2" then
-        field.createdElement = Sand
+        field.createdElement = Oil
     elseif key == "3" then
-        field.createdElement = Stone
-    -----
+        field.createdElement = Slime
     elseif key == "4" then
-        field.createdElement = SandDebug1
+        field.createdElement = Stone
     elseif key == "5" then
-        field.createdElement = SandDebug2
+        field.createdElement = Sand
+    -----
+    elseif key == "6" then
+        field.createdElement = Sand1
+    elseif key == "7" then
+        field.createdElement = Sand2
     -----
     elseif key == "right" and field.isPauseUpdate then
         field:update()
@@ -93,13 +100,19 @@ function drawInformation()
     -- love.graphics.print("Window width: "..tostring(windowWidth), 10, 70)
     -- love.graphics.print("Window height: "..tostring(windowHeight), 10, 90)
     love.graphics.print("Key Assignment:", 10, 100)
-    love.graphics.print("1 - Water (by default)", 10, 120)
-    love.graphics.print("2 - Sand", 10, 140)
-    love.graphics.print("3 - Stone", 10, 160)
-    love.graphics.print("Mwheel up - larger particle creation area", 10, 180)
-    love.graphics.print("Mwheel down - smaller particle creation area", 10, 200)
-    love.graphics.print("R - Clear field", 10, 220)
-    love.graphics.print("F11 - Full screen/Windowed mode", 10, 240)
-    love.graphics.print("Lmouse button - Create particles", 10, 260)
-    love.graphics.print("Rmouse button - Delete particles", 10, 280)
+    love.graphics.print("1 - Water (by default, dens = 900)", 10, 120)
+    love.graphics.print("2 - Oil (dens = 750)", 10, 140)
+    love.graphics.print("3 - Slime (dens = 800)", 10, 160)
+    love.graphics.print("4 - Stone (static)", 10, 180)
+    love.graphics.print("5 - Sand 1 (dens = 1500)", 10, 200)
+    love.graphics.print("6 - Sand 2 (dens = 950)", 10, 220)
+    love.graphics.print("7 - Sand 3 (dens = 775)", 10, 240)
+    love.graphics.print("Mwheel up - larger particle creation area", 10, 260)
+    love.graphics.print("Mwheel down - smaller particle creation area", 10, 280)
+    love.graphics.print("R - Clear field", 10, 300)
+    love.graphics.print("P - Pause/Unpause", 10, 320)
+    love.graphics.print("Right arrow - Next frame (when paused)", 10, 340)
+    love.graphics.print("F11 - Full screen/Windowed mode", 10, 360)
+    love.graphics.print("Lmouse button - Create particles", 10, 380)
+    love.graphics.print("Rmouse button - Delete particles", 10, 400)
 end

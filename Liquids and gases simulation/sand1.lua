@@ -1,12 +1,12 @@
-SandDebug1 = Element:extend()
+Sand1 = Element:extend()
 
-function SandDebug1:new(x, y)
-    SandDebug1.super.new(self, x, y)
-    self.color = {0.32, 0.25, 0.8}
-    self.density = 700
+function Sand1:new(x, y)
+    Sand1.super.new(self, x, y)
+    self.color = {0.25, 0.25, 0.75}
+    self.density = 950
 end
 
-function SandDebug1:update(fieldClass, newField, updateType, dt)
+function Sand1:update(fieldClass, newField, updateType, dt)
     if updateType == fieldClass.elementManager.updateTypes.MOVE then
         local isDownReachable = fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0
         local isDownLeftReachable = fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0
@@ -38,39 +38,40 @@ function SandDebug1:update(fieldClass, newField, updateType, dt)
         local targetCell = fieldClass.field[self.y + 1][self.x]
         local isDownCanBeSwapped = not (targetCell == 0) and not targetCell.isUpdated and targetCell.density < self.density
         if isDownCanBeSwapped then
-            fieldClass.field[self.y + 1][self.x].y = fieldClass.field[self.y + 1][self.x].y - 1
-            newField[self.y][self.x] = fieldClass.field[self.y + 1][self.x]:copy()
+            targetCell.y = targetCell.y - 1
+            newField[self.y][self.x] = targetCell:copy()
             fieldClass.field[self.y + 1][self.x].isUpdated = true
             self.y = self.y + 1
         else
-            targetCell = fieldClass.field[self.y + 1][self.x - 1]
-            local isDownLeftCanBeSwapped = not (targetCell == 0) and not (targetCell == nil) and not targetCell.isUpdated and targetCell.density < self.density
-            targetCell = fieldClass.field[self.y + 1][self.x + 1]
-            local isDownRightCanBeSwapped = not (targetCell == 0) and not (targetCell == nil) and not targetCell.isUpdated and targetCell.density < self.density
+            local targetCellLeft = fieldClass.field[self.y + 1][self.x - 1]
+            local isDownLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density < self.density
+            local targetCellRight = fieldClass.field[self.y + 1][self.x + 1]
+            local isDownRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density < self.density
             if isDownLeftCanBeSwapped and isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = nil
                 if love.math.random(0,1) == 0 then x = self.x - 1
                 else x = self.x + 1 end
-                fieldClass.field[y][x].y = fieldClass.field[y][x].y - 1
-                fieldClass.field[y][x].x = fieldClass.field[y][x].x + (self.x - x)
-                newField[self.y][self.x] = fieldClass.field[y][x]:copy()
+                local chosedCell = fieldClass.field[y][x]
+                chosedCell.y = chosedCell.y - 1
+                chosedCell.x = chosedCell.x + (self.x - x)
+                newField[self.y][self.x] = chosedCell:copy()
                 fieldClass.field[y][x].isUpdated = true
                 self.y, self.x = y, x
             elseif isDownLeftCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x - 1
-                fieldClass.field[y][x].y = fieldClass.field[y][x].y - 1
-                fieldClass.field[y][x].x = fieldClass.field[y][x].x + 1
-                newField[self.y][self.x] = fieldClass.field[y][x]:copy()
+                targetCellLeft.y = targetCellLeft.y - 1
+                targetCellLeft.x = targetCellLeft.x + 1
+                newField[self.y][self.x] = targetCellLeft:copy()
                 fieldClass.field[y][x].isUpdated = true
                 self.y, self.x = y, x
             elseif isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x + 1
-                fieldClass.field[y][x].y = fieldClass.field[y][x].y - 1
-                fieldClass.field[y][x].x = fieldClass.field[y][x].x - 1
-                newField[self.y][self.x] = fieldClass.field[y][x]:copy()
+                targetCellRight.y = targetCellRight.y - 1
+                targetCellRight.x = targetCellRight.x - 1
+                newField[self.y][self.x] = targetCellRight:copy()
                 fieldClass.field[y][x].isUpdated = true
                 self.y, self.x = y, x
             end
@@ -80,11 +81,11 @@ function SandDebug1:update(fieldClass, newField, updateType, dt)
     self.isUpdated = true
 end
 
-function SandDebug1:copy()
-    return SandDebug1(self.x, self.y)
+function Sand1:copy()
+    return Sand1(self.x, self.y)
 end
 
-function SandDebug1:getUpdateType(fieldClass)
+function Sand1:getUpdateType(fieldClass)
     local isLowerBound = self.y == fieldClass.height
     if isLowerBound then
         return fieldClass.elementManager.updateTypes.NONE
