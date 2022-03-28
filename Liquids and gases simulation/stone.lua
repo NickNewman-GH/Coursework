@@ -12,3 +12,7 @@ end
 function Stone:copy()
     return Stone(self.x, self.y)
 end
+
+function Stone:getUpdateType(fieldClass)
+    return fieldClass.elementManager.updateTypes.NONE
+end

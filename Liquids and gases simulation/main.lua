@@ -14,7 +14,7 @@ function love.load()
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
     
-    field = Field(250, 250)
+    field = Field(100, 100)
     fullscreen = false
 end
 
@@ -77,10 +77,10 @@ function love.resize(w, h)
 end
 
 function love.wheelmoved(x, y)
-    if y > 0 and field.creationAreaSideSize < 19 then
-        field.creationAreaSideSize = field.creationAreaSideSize + 1
-    elseif y < 0 and field.creationAreaSideSize > -1 then
-        field.creationAreaSideSize = field.creationAreaSideSize - 1
+    if y > 0 and field.creationAreaSideSize < 20 then
+        field.creationAreaSideSize = field.creationAreaSideSize + 2
+    elseif y < 0 and field.creationAreaSideSize > 1 then
+        field.creationAreaSideSize = field.creationAreaSideSize - 2
     end
 end
 

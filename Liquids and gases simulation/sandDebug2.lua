@@ -3,7 +3,7 @@ SandDebug2 = Element:extend()
 function SandDebug2:new(x, y)
     SandDebug2.super.new(self, x, y)
     self.color = {0.82, 0.25, 0.8}
-    self.density = 900
+    self.density = 950
 end
 
 function SandDebug2:update(fieldClass, newField, updateType, dt)

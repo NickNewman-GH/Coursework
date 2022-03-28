@@ -7,8 +7,8 @@ function Water:new(x, y)
     self.density = 900
 end
 
-function Water:update(fieldClass, newField, dt)
-    if not self.isUpdated then
+function Water:update(fieldClass, newField, updateType, dt)
+    if updateType == fieldClass.elementManager.updateTypes.MOVE then
         local isLowerBound = self.y == fieldClass.height
         if not isLowerBound then
             local isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
@@ -125,13 +125,70 @@ function Water:update(fieldClass, newField, dt)
                 end
             end
         end
-        newField[self.y][self.x] = self:copy()
-        self.isUpdated = true
-    else
-        self.isUpdated = false
     end
+    newField[self.y][self.x] = self:copy()
+    self.isUpdated = true
 end
 
 function Water:copy()
     return Water(self.x, self.y)
+end
+
+function Water:getUpdateType(fieldClass)
+    local isLowerBound = self.y == fieldClass.height
+    if isLowerBound then
+        leftTargetCell = fieldClass.field[self.y][self.x - 1]
+        rightTargetCell = fieldClass.field[self.y][self.x + 1]
+        local isLeftReachable = leftTargetCell == 0
+        local isRightReachable = rightTargetCell == 0
+        if isLeftReachable or isRightReachable then 
+            return fieldClass.elementManager.updateTypes.MOVE
+        else
+            local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
+            local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+            if isLeftLowerDensity or isRightLowerDensity then
+                return fieldClass.elementManager.updateTypes.SWAP
+            end
+        end
+    else
+        local targetCell = fieldClass.field[self.y + 1][self.x]
+        local isDownReachable = targetCell == 0
+        local isDownLowerDensity = not isDownReachable and targetCell.density < self.density
+        if isDownReachable then
+            return fieldClass.elementManager.updateTypes.MOVE
+        elseif isDownLowerDensity then
+            return fieldClass.elementManager.updateTypes.SWAP
+        else
+            local leftTargetCell = fieldClass.field[self.y + 1][self.x - 1]
+            local isDownLeftReachable = leftTargetCell == 0
+            
+            local rightTargetCell = fieldClass.field[self.y + 1][self.x + 1]
+            local isDownRightReachable = rightTargetCell == 0
+
+            if isDownLeftReachable or isDownRightReachable then
+                return fieldClass.elementManager.updateTypes.MOVE
+            else
+                local isDownLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
+                local isDownRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+                if isDownLeftLowerDensity or isDownRightLowerDensity then
+                    return fieldClass.elementManager.updateTypes.SWAP
+                else
+                    leftTargetCell = fieldClass.field[self.y][self.x - 1]
+                    rightTargetCell = fieldClass.field[self.y][self.x + 1]
+                    local isLeftReachable = leftTargetCell == 0
+                    local isRightReachable = rightTargetCell == 0
+                    if isLeftReachable or isRightReachable then 
+                        return fieldClass.elementManager.updateTypes.MOVE
+                    else
+                        local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
+                        local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+                        if isLeftLowerDensity or isRightLowerDensity then
+                            return fieldClass.elementManager.updateTypes.SWAP
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return fieldClass.elementManager.updateTypes.NONE
 end
