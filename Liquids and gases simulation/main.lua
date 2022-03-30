@@ -308,13 +308,9 @@ function love.mousepressed(x, y, button, istouch)
             resizeFieldWindow.heightTextField.isFocused = false 
         end
     end
-    --isActiveItemPressed = false
  end
 
  function love.mousereleased(x, y, button) 
-    if button == 1 and isShowButtons then
-        
-    end
     if button == 1 then
         if isShowButtons then
             for i=1,#buttons do
