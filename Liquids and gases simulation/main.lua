@@ -41,8 +41,8 @@ function getWindowInformation()
     return {
         love.graphics.newText(font, "Window information:"),
         love.graphics.newText(font, "Current FPS: "..tostring(love.timer.getFPS( ))),
-        love.graphics.newText(font, "Field height: "..tostring(field.height)),
         love.graphics.newText(font, "Field width: "..tostring(field.width)),
+        love.graphics.newText(font, "Field height: "..tostring(field.height)),
         love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize+1))
     }
 end
@@ -51,8 +51,8 @@ function updateWindowInformation()
     windowInformation = {
         love.graphics.newText(font, "Window information:"),
         love.graphics.newText(font, "Current FPS: "..tostring(love.timer.getFPS( ))),
-        love.graphics.newText(font, "Field height: "..tostring(field.height)),
         love.graphics.newText(font, "Field width: "..tostring(field.width)),
+        love.graphics.newText(font, "Field height: "..tostring(field.height)),
         love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize+1))
     }
 end
@@ -138,18 +138,21 @@ end
 function love.keypressed(key, scancode, isrepeat)
     if (resizeFieldWindow.widthTextField.isFocused or resizeFieldWindow.heightTextField.isFocused) and 
     ((key == "1") or (key == "2") or (key == "3") or (key == "4") or (key == "5") or 
-    (key == "6") or (key == "7") or (key == "8") or (key == "9") or  (key == "0") or (key == "backspace")) then
+    (key == "6") or (key == "7") or (key == "8") or (key == "9") or  (key == "0") or 
+    (key == "kp1") or (key == "kp2") or (key == "kp3") or (key == "kp4") or (key == "kp5") or 
+    (key == "kp6") or (key == "kp7") or (key == "kp8") or (key == "kp9") or  (key == "kp0") or 
+    (key == "backspace")) then
         if resizeFieldWindow.widthTextField.isFocused then
             if key == "backspace" then
                 resizeFieldWindow.widthTextField.text = string.sub(resizeFieldWindow.widthTextField.text, 1, #resizeFieldWindow.widthTextField.text-1)
             elseif #resizeFieldWindow.widthTextField.text < 4 then
-                resizeFieldWindow.widthTextField.text = resizeFieldWindow.widthTextField.text..key
+                resizeFieldWindow.widthTextField.text = resizeFieldWindow.widthTextField.text..string.sub(key, -1)
             end
         else
             if key == "backspace" then
                 resizeFieldWindow.heightTextField.text = string.sub(resizeFieldWindow.heightTextField.text, 1, #resizeFieldWindow.heightTextField.text-1)
             elseif #resizeFieldWindow.heightTextField.text < 4 then
-                resizeFieldWindow.heightTextField.text = resizeFieldWindow.heightTextField.text..key
+                resizeFieldWindow.heightTextField.text = resizeFieldWindow.heightTextField.text..string.sub(key, -1)
             end
         end
 	elseif key == "f11" then
