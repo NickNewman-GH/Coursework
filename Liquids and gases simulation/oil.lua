@@ -4,7 +4,7 @@ function Oil:new(x, y)
     Oil.super.new(self, x, y)
     self.color = {1, 0.9, 0}
     self.dispersionRate = field.width / 15
-    self.density = 750
+    self.density = 900
 end
 
 function Oil:copy()

@@ -110,7 +110,11 @@ function Liquid:update(fieldClass, newField, updateType, dt)
         else
             local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
             local isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-            if isLeftReachable then
+            if isLeftReachable and isRightReachable then
+                local sideChoice = love.math.random(0,1)
+                if sideChoice == 0 then self.x = self.x - 1
+                else self.x = self.x + 1 end
+            elseif isLeftReachable then
                 for i=1,self.dispersionRate do
                     self.x = self.x - 1
                     isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
@@ -173,9 +177,9 @@ function Liquid:update(fieldClass, newField, updateType, dt)
                 self.y, self.x = y, x
             else
                 targetCellLeft = fieldClass.field[self.y][self.x - 1]
-                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density < self.density
+                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density <= self.density
                 targetCellRight = fieldClass.field[self.y][self.x + 1]
-                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density < self.density
+                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density <= self.density
                 if isLeftCanBeSwapped and isRightCanBeSwapped then
                     local x = nil
                     if love.math.random(0,1) == 0 then x = self.x - 1
@@ -213,8 +217,8 @@ function Liquid:getUpdateType(fieldClass)
         if isLeftReachable or isRightReachable then 
             return fieldClass.elementManager.updateTypes.MOVE
         else
-            local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-            local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+            local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density <= self.density
+            local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density <= self.density
             if isLeftLowerDensity or isRightLowerDensity then
                 return fieldClass.elementManager.updateTypes.SWAP
             end
@@ -249,8 +253,8 @@ function Liquid:getUpdateType(fieldClass)
                     if isLeftReachable or isRightReachable then 
                         return fieldClass.elementManager.updateTypes.MOVE
                     else
-                        local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-                        local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+                        local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density <= self.density
+                        local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density <= self.density
                         if isLeftLowerDensity or isRightLowerDensity then
                             return fieldClass.elementManager.updateTypes.SWAP
                         end

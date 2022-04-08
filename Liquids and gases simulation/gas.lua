@@ -109,7 +109,11 @@ function Gas:update(fieldClass, newField, updateType, dt)
         else
             local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
             local isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
-            if isLeftReachable then
+            if isLeftReachable and isRightReachable then
+                local sideChoice = love.math.random(0,1)
+                if sideChoice == 0 then self.x = self.x - 1
+                else self.x = self.x + 1 end
+            elseif isLeftReachable then
                 for i=1,self.dispersionRate do
                     self.x = self.x - 1
                     isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
@@ -125,14 +129,14 @@ function Gas:update(fieldClass, newField, updateType, dt)
         end
     elseif updateType == fieldClass.elementManager.updateTypes.SWAP then
         local isUpperBound = self.y == 1
-        local targetCellUp = nil
+        local targetCellDown = nil
         if not isUpperBound then
-            targetCellUp = fieldClass.field[self.y - 1][self.x]
+            targetCellDown = fieldClass.field[self.y - 1][self.x]
         end
-        local isUpCanBeSwapped = not (targetCellUp == 0) and not (targetCellUp == nil) and not targetCellUp.isUpdated and targetCellUp.density < self.density
+        local isUpCanBeSwapped = not (targetCellDown == 0) and not (targetCellDown == nil) and not targetCellDown.isUpdated and targetCellDown.density > self.density
         if isUpCanBeSwapped then
-            targetCellUp.y = targetCellUp.y + 1
-            newField[self.y][self.x] = targetCellUp:copy()
+            targetCellDown.y = targetCellDown.y + 1
+            newField[self.y][self.x] = targetCellDown:copy()
             fieldClass.field[self.y - 1][self.x].isUpdated = true
             self.y = self.y - 1
         else
@@ -141,8 +145,8 @@ function Gas:update(fieldClass, newField, updateType, dt)
                 targetCellLeft = fieldClass.field[self.y - 1][self.x - 1]
                 targetCellRight = fieldClass.field[self.y - 1][self.x + 1]
             end
-            local isUpLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density < self.density
-            local isUpRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density < self.density
+            local isUpLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density > self.density
+            local isUpRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density > self.density
             if isUpLeftCanBeSwapped and isUpRightCanBeSwapped then
                 local y = self.y - 1
                 local x = nil
@@ -172,9 +176,9 @@ function Gas:update(fieldClass, newField, updateType, dt)
                 self.y, self.x = y, x
             else
                 targetCellLeft = fieldClass.field[self.y][self.x - 1]
-                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density < self.density
+                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density >= self.density
                 targetCellRight = fieldClass.field[self.y][self.x + 1]
-                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density < self.density
+                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density >= self.density
                 if isLeftCanBeSwapped and isRightCanBeSwapped then
                     local x = nil
                     if love.math.random(0,1) == 0 then x = self.x - 1
@@ -212,19 +216,19 @@ function Gas:getUpdateType(fieldClass)
         if isLeftReachable or isRightReachable then 
             return fieldClass.elementManager.updateTypes.MOVE
         else
-            local isLeftMoreDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-            local isRightMoreDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
-            if isLeftMoreDensity or isRightMoreDensity then
+            local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density >= self.density
+            local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density >= self.density
+            if isLeftLowerDensity or isRightLowerDensity then
                 return fieldClass.elementManager.updateTypes.SWAP
             end
         end
     else
         local targetCell = fieldClass.field[self.y - 1][self.x]
         local isUpReachable = targetCell == 0
-        local isUpperMoreDensity = not isUpReachable and targetCell.density < self.density
+        local isUpperLowerDensity = not isUpReachable and targetCell.density > self.density
         if isUpReachable then
             return fieldClass.elementManager.updateTypes.MOVE
-        elseif isUpperMoreDensity then
+        elseif isUpperLowerDensity then
             return fieldClass.elementManager.updateTypes.SWAP
         else
             local leftTargetCell = fieldClass.field[self.y - 1][self.x - 1]
@@ -236,9 +240,9 @@ function Gas:getUpdateType(fieldClass)
             if isUpLeftReachable or isUpRightReachable then
                 return fieldClass.elementManager.updateTypes.MOVE
             else
-                local isUpLeftMoreDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-                local isUpRightMoreDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
-                if isUpLeftMoreDensity or isUpRightMoreDensity then
+                local isUpLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density > self.density
+                local isUpRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density > self.density
+                if isUpLeftLowerDensity or isUpRightLowerDensity then
                     return fieldClass.elementManager.updateTypes.SWAP
                 else
                     leftTargetCell = fieldClass.field[self.y][self.x - 1]
@@ -248,9 +252,9 @@ function Gas:getUpdateType(fieldClass)
                     if isLeftReachable or isRightReachable then 
                         return fieldClass.elementManager.updateTypes.MOVE
                     else
-                        local isLeftMoreDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-                        local isRightMoreDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
-                        if isLeftMoreDensity or isRightMoreDensity then
+                        local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density >= self.density
+                        local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density >= self.density
+                        if isLeftLowerDensity or isRightLowerDensity then
                             return fieldClass.elementManager.updateTypes.SWAP
                         end
                     end
