@@ -15,6 +15,12 @@ function love.load()
     -----
     require "water"
     require "stone"
+    require "gas"
+    require "smoke"
+    -----
+    require "smoke1"
+    require "smoke2"
+    -----
 
     windowWidth, windowHeight = 800, 800
     love.window.setMode(windowWidth, windowHeight, {resizable=true, vsync=true})
@@ -67,6 +73,9 @@ function getKeysAssignmentInformation()
         love.graphics.newText(font, "5 - Sand 1 (dens = 1500)"),
         love.graphics.newText(font, "6 - Sand 2 (dens = 950)"),
         love.graphics.newText(font, "7 - Sand 3 (dens = 775)"),
+        love.graphics.newText(font, "8 - Smoke 1 (dens = 15)"),
+        love.graphics.newText(font, "9 - Smoke 2 (dens = 10)"),
+        love.graphics.newText(font, "0 - Smoke 3 (dens = 5)"),
         love.graphics.newText(font, "Mwheel up - Larger particle creation area"),
         love.graphics.newText(font, "Mwheel down - Smaller particle creation area"),
         love.graphics.newText(font, "R - Clear field"),
@@ -175,12 +184,24 @@ function love.keypressed(key, scancode, isrepeat)
         field.createdElement = Stone
     elseif key == "5" then
         field.createdElement = Sand
+
     -----
     elseif key == "6" then
         field.createdElement = Sand1
     elseif key == "7" then
         field.createdElement = Sand2
     -----
+
+    elseif key == "8" then
+        field.createdElement = Smoke
+
+    -----
+    elseif key == "9" then
+        field.createdElement = Smoke1
+    elseif key == "0" then
+        field.createdElement = Smoke2
+    -----
+
     elseif key == "right" and field.isPauseUpdate then
         field:update()
     end
