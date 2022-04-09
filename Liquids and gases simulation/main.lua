@@ -6,6 +6,7 @@ function love.load()
     require "element"
     require "sand"
     require "liquid"
+    require "static"
     require "oil"
     require "slime"
     require "resizeFieldWindow"

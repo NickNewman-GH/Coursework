@@ -134,7 +134,7 @@ function Liquid:update(fieldClass, newField, updateType, dt)
         if not isLowerBound then
             targetCellDown = fieldClass.field[self.y + 1][self.x]
         end
-        local isDownCanBeSwapped = not (targetCellDown == 0) and not (targetCellDown == nil) and not targetCellDown.isUpdated and targetCellDown.density < self.density
+        local isDownCanBeSwapped = not (targetCellDown == 0) and not (targetCellDown == nil) and not targetCellDown.isUpdated and targetCellDown.density and targetCellDown.density < self.density
         if isDownCanBeSwapped then
             targetCellDown.y = targetCellDown.y - 1
             newField[self.y][self.x] = targetCellDown:copy()
@@ -146,8 +146,8 @@ function Liquid:update(fieldClass, newField, updateType, dt)
                 targetCellLeft = fieldClass.field[self.y + 1][self.x - 1]
                 targetCellRight = fieldClass.field[self.y + 1][self.x + 1]
             end
-            local isDownLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density < self.density
-            local isDownRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density < self.density
+            local isDownLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density < self.density
+            local isDownRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density < self.density
             if isDownLeftCanBeSwapped and isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = nil
@@ -177,9 +177,9 @@ function Liquid:update(fieldClass, newField, updateType, dt)
                 self.y, self.x = y, x
             else
                 targetCellLeft = fieldClass.field[self.y][self.x - 1]
-                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density <= self.density
+                local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density <= self.density
                 targetCellRight = fieldClass.field[self.y][self.x + 1]
-                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density <= self.density
+                local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density <= self.density
                 if isLeftCanBeSwapped and isRightCanBeSwapped then
                     local x = nil
                     if love.math.random(0,1) == 0 then x = self.x - 1
@@ -216,9 +216,9 @@ function Liquid:getUpdateType(fieldClass)
         local isRightReachable = rightTargetCell == 0
         if isLeftReachable or isRightReachable then 
             return fieldClass.elementManager.updateTypes.MOVE
-        else
-            local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density <= self.density
-            local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density <= self.density
+        elseif not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == 0) or (rightTargetCell == nil)) and leftTargetCell.density and rightTargetCell.density then
+            local isLeftLowerDensity = leftTargetCell.density <= self.density
+            local isRightLowerDensity = rightTargetCell.density <= self.density
             if isLeftLowerDensity or isRightLowerDensity then
                 return fieldClass.elementManager.updateTypes.SWAP
             end
@@ -226,7 +226,7 @@ function Liquid:getUpdateType(fieldClass)
     else
         local targetCell = fieldClass.field[self.y + 1][self.x]
         local isDownReachable = targetCell == 0
-        local isDownLowerDensity = not isDownReachable and targetCell.density < self.density
+        local isDownLowerDensity = not isDownReachable and targetCell.density and targetCell.density < self.density
         if isDownReachable then
             return fieldClass.elementManager.updateTypes.MOVE
         elseif isDownLowerDensity then
@@ -241,8 +241,8 @@ function Liquid:getUpdateType(fieldClass)
             if isDownLeftReachable or isDownRightReachable then
                 return fieldClass.elementManager.updateTypes.MOVE
             else
-                local isDownLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density < self.density
-                local isDownRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density < self.density
+                local isDownLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil)) and leftTargetCell.density and leftTargetCell.density < self.density
+                local isDownRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil)) and rightTargetCell.density and rightTargetCell.density < self.density
                 if isDownLeftLowerDensity or isDownRightLowerDensity then
                     return fieldClass.elementManager.updateTypes.SWAP
                 else
@@ -252,9 +252,9 @@ function Liquid:getUpdateType(fieldClass)
                     local isRightReachable = rightTargetCell == 0
                     if isLeftReachable or isRightReachable then 
                         return fieldClass.elementManager.updateTypes.MOVE
-                    else
-                        local isLeftLowerDensity = not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == nil)) and leftTargetCell.density <= self.density
-                        local isRightLowerDensity = not ((rightTargetCell == 0) or (rightTargetCell == nil) or (leftTargetCell == nil)) and rightTargetCell.density <= self.density
+                    elseif not ((leftTargetCell == 0) or (leftTargetCell == nil) or (rightTargetCell == 0) or (rightTargetCell == nil)) and leftTargetCell.density and rightTargetCell.density then
+                        local isLeftLowerDensity = leftTargetCell.density <= self.density
+                        local isRightLowerDensity = rightTargetCell.density <= self.density
                         if isLeftLowerDensity or isRightLowerDensity then
                             return fieldClass.elementManager.updateTypes.SWAP
                         end
