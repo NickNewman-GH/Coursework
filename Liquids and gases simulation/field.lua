@@ -13,9 +13,12 @@ function Field:new(width, height)
     self:sizesComputing(love.graphics.getDimensions())
 
     self.createdElement = Water
-    self.creationAreaSideSize = 10
+    self.creationAreaSideSize = 11
 
     self.isPauseUpdate = false
+
+    self.mouseFieldXPos = nil
+    self.mouseFieldYPos = nil
 end
 
 function Field:newField()
@@ -39,6 +42,19 @@ function Field:draw()
             end
         end
     end
+end
+
+function Field:drawCreationArea()
+    if self.mouseFieldXPos and self.mouseFieldYPos and isShowCreationArea then
+        love.graphics.setColor({0.5, 0.5, 0.5, 0.5})
+        love.graphics.rectangle("line", self.widthOffset + (self.mouseFieldXPos - (self.creationAreaSideSize - 1) / 2 - 1)*self.sideSize, self.heightOffset + 
+        (self.mouseFieldYPos - (self.creationAreaSideSize - 1) / 2 - 1)*self.sideSize, self.sideSize * self.creationAreaSideSize, self.sideSize * self.creationAreaSideSize)
+    end
+end
+
+function Field:updateMouseFieldPos(mouseX, mouseY)
+    self.mouseFieldXPos = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
+    self.mouseFieldYPos = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
 end
 
 function Field:update(dt)
@@ -73,32 +89,26 @@ function Field:sizesComputing(windowWidth, windowHeight)
     end
 end
 
-function Field:addElements(mouseX, mouseY)
-    local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
-    local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
-
+function Field:addElements()
     sideSize = math.floor(self.creationAreaSideSize/2)
     for i=-sideSize,sideSize do
-        if fieldY+i <= self.height and fieldY+i > 0 then
+        if self.mouseFieldYPos+i <= self.height and self.mouseFieldYPos+i > 0 then
             for j=-sideSize,sideSize do
-                if fieldX+j <= self.width and fieldX+j > 0 and self.field[fieldY+i][fieldX+j] == 0 then
-                    self.field[fieldY+i][fieldX+j] = self.createdElement(fieldX+j, fieldY+i)
+                if self.mouseFieldXPos+j <= self.width and self.mouseFieldXPos+j > 0 and self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] == 0 then
+                    self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] = self.createdElement(self.mouseFieldXPos+j, self.mouseFieldYPos+i)
                 end
             end
         end
     end
 end
 
-function Field:removeElements(mouseX, mouseY)
-    local fieldX = math.floor((mouseX - self.widthOffset) / self.sideSize) + 1
-    local fieldY = math.floor((mouseY - self.heightOffset) / self.sideSize) + 1
-
+function Field:removeElements()
     sideSize = math.floor(self.creationAreaSideSize/2)
     for i=-sideSize,sideSize do
-        if fieldY+i <= self.height and fieldY+i > 0 then
+        if self.mouseFieldYPos+i <= self.height and self.mouseFieldYPos+i > 0 then
             for j=-sideSize,sideSize do
-                if fieldX+j <= self.width and fieldX+j > 0 then
-                    self.field[fieldY+i][fieldX+j] = 0
+                if self.mouseFieldXPos+j <= self.width and self.mouseFieldXPos+j > 0 then
+                    self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] = 0
                 end
             end
         end

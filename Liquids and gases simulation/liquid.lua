@@ -3,7 +3,6 @@ Liquid = Element:extend()
 function Liquid:new(x, y)
     Liquid.super.new(self, x, y)
     self.dispersionRate = 0
-    self.density = 0
 end
 
 function Liquid:update(fieldClass, newField, updateType, dt)

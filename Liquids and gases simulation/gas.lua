@@ -3,7 +3,6 @@ Gas = Element:extend()
 function Gas:new(x, y)
     Gas.super.new(self, x, y)
     self.dispersionRate = 0
-    self.density = 0
 end
 
 function Gas:update(fieldClass, newField, updateType, dt)

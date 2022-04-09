@@ -4,10 +4,12 @@ function love.load()
     require "elementManager"
     require "field"
     require "element"
-    require "sand"
     require "liquid"
     require "static"
+    require "gas"
+    require "solid"
     require "oil"
+    require "sand"
     require "slime"
     require "resizeFieldWindow"
     -----
@@ -16,7 +18,7 @@ function love.load()
     -----
     require "water"
     require "stone"
-    require "gas"
+    
     require "smoke"
     -----
     require "smoke1"
@@ -37,6 +39,7 @@ function love.load()
     isShowKeysInformation = true
     isShowResizeFieldWindow = false
     isShowButtons = true
+    isShowCreationArea = true
 
     windowInformation = getWindowInformation()
     keysAssignmentInformation = getKeysAssignmentInformation()
@@ -50,7 +53,7 @@ function getWindowInformation()
         love.graphics.newText(font, "Current FPS: "..tostring(love.timer.getFPS( ))),
         love.graphics.newText(font, "Field width: "..tostring(field.width)),
         love.graphics.newText(font, "Field height: "..tostring(field.height)),
-        love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize+1))
+        love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize))
     }
 end
 
@@ -60,7 +63,7 @@ function updateWindowInformation()
         love.graphics.newText(font, "Current FPS: "..tostring(love.timer.getFPS( ))),
         love.graphics.newText(font, "Field width: "..tostring(field.width)),
         love.graphics.newText(font, "Field height: "..tostring(field.height)),
-        love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize+1))
+        love.graphics.newText(font, "Creation area size: "..tostring(field.creationAreaSideSize))
     }
 end
 
@@ -81,6 +84,7 @@ function getKeysAssignmentInformation()
         love.graphics.newText(font, "Mwheel down - Smaller particle creation area"),
         love.graphics.newText(font, "R - Clear field"),
         love.graphics.newText(font, "H - Show/hide buttons"),
+        love.graphics.newText(font, "L - Hide all/show buttons and creation area"),
         love.graphics.newText(font, "P - Pause/Unpause"),
         love.graphics.newText(font, "Right arrow - Next frame (when paused)"),
         love.graphics.newText(font, "F11 - Full screen/Windowed mode"),
@@ -105,10 +109,10 @@ function love.update(dt)
     end
     if love.mouse.isDown(1) then
         if not isActiveItemPressed then 
-            field:addElements(love.mouse.getPosition())
+            field:addElements()
         end
     elseif love.mouse.isDown(2) then
-        field:removeElements(love.mouse.getPosition())
+        field:removeElements()
     end
     if not field.isPauseUpdate then
         field:update(dt)
@@ -117,6 +121,7 @@ end
 
 function love.draw()
     field:draw()
+    field:drawCreationArea()
     love.graphics.setColor({0.5, 0.5, 0.5})
     if field.widthOffset > 0 then
         love.graphics.rectangle("fill", 0, 0, field.widthOffset, windowHeight)
@@ -175,6 +180,20 @@ function love.keypressed(key, scancode, isrepeat)
         field.isPauseUpdate = not field.isPauseUpdate
     elseif key == "h" then
         isShowButtons = not isShowButtons
+    elseif key == "l" then
+        if isShowCreationArea then
+            isShowWindowInformation = false
+            isShowKeysInformation = false
+            isShowResizeFieldWindow = false
+            isShowButtons = false
+            isShowCreationArea = false
+            love.mouse.setVisible( false )
+        else
+            isShowCreationArea = true
+            isShowButtons = true
+            isShowWindowInformation = true
+            love.mouse.setVisible( true )
+        end
     elseif key == "1" then
         field.createdElement = Water
     elseif key == "2" then
@@ -350,3 +369,7 @@ function love.mousepressed(x, y, button, istouch)
         isActiveItemPressed = false
     end
  end
+
+ function love.mousemoved( x, y, dx, dy, istouch )
+	field:updateMouseFieldPos(x, y)
+end
