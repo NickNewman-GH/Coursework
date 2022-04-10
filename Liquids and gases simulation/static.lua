@@ -6,7 +6,8 @@ function Static:new(x, y)
 end
 
 function Static:update(fieldClass, newField, dt)
-    newField[self.y][self.x] = self
+    self:giveTempToOthers(fieldClass, dt)
+    newField[self.y][self.x] = self:copy()
 end
 
 function Static:getUpdateType(fieldClass)

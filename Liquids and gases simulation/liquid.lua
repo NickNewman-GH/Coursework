@@ -203,6 +203,8 @@ function Liquid:update(fieldClass, newField, updateType, dt)
         end
     end
     newField[self.y][self.x] = self:copy()
+    -- newField[self.y][self.x].temp = self.temp
+    -- newField[self.y][self.x].color[1] = self.color[1] + self.temp/100
     self.isUpdated = true
 end
 

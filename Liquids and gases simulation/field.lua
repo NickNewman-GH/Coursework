@@ -19,6 +19,11 @@ function Field:new(width, height)
 
     self.mouseFieldXPos = nil
     self.mouseFieldYPos = nil
+
+    self.tempChangeType = 0
+    self.tempChangePerSec = 100
+
+    self.insideTemp = 25
 end
 
 function Field:newField()
@@ -109,6 +114,19 @@ function Field:removeElements()
             for j=-sideSize,sideSize do
                 if self.mouseFieldXPos+j <= self.width and self.mouseFieldXPos+j > 0 then
                     self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] = 0
+                end
+            end
+        end
+    end
+end
+
+function Field:changeElementsTemp(dt)
+    sideSize = math.floor(self.creationAreaSideSize/2)
+    for i=-sideSize,sideSize do
+        if self.mouseFieldYPos+i <= self.height and self.mouseFieldYPos+i > 0 then
+            for j=-sideSize,sideSize do
+                if self.mouseFieldXPos+j <= self.width and self.mouseFieldXPos+j > 0 and not (self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] == 0) then
+                    self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j].temp = self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j].temp + self.tempChangePerSec * dt * self.tempChangeType
                 end
             end
         end

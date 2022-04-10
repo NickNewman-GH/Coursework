@@ -75,8 +75,8 @@ function getKeysAssignmentInformation()
         love.graphics.newText(font, "3 - Slime (dens = 800)"),
         love.graphics.newText(font, "4 - Stone (static)"),
         love.graphics.newText(font, "5 - Sand 1 (dens = 1500)"),
-        love.graphics.newText(font, "6 - Sand 2 (dens = 950)"),
-        love.graphics.newText(font, "7 - Sand 3 (dens = 775)"),
+        love.graphics.newText(font, "6 - Heat"),
+        love.graphics.newText(font, "7 - Freeze"),
         love.graphics.newText(font, "8 - Smoke 1 (dens = 15)"),
         love.graphics.newText(font, "9 - Smoke 2 (dens = 10)"),
         love.graphics.newText(font, "0 - Smoke 3 (dens = 5)"),
@@ -108,7 +108,9 @@ function love.update(dt)
         updateWindowInformation()
     end
     if love.mouse.isDown(1) then
-        if not isActiveItemPressed then 
+        if not (field.tempChangeType == 0) then
+            field:changeElementsTemp(dt)
+        elseif not isActiveItemPressed then 
             field:addElements()
         end
     elseif love.mouse.isDown(2) then
@@ -196,30 +198,38 @@ function love.keypressed(key, scancode, isrepeat)
         end
     elseif key == "1" then
         field.createdElement = Water
+        field.tempChangeType = 0
     elseif key == "2" then
         field.createdElement = Oil
+        field.tempChangeType = 0
     elseif key == "3" then
         field.createdElement = Slime
+        field.tempChangeType = 0
     elseif key == "4" then
         field.createdElement = Stone
+        field.tempChangeType = 0
     elseif key == "5" then
         field.createdElement = Sand
+        field.tempChangeType = 0
 
-    -----
+
     elseif key == "6" then
-        field.createdElement = Sand1
+        field.tempChangeType = 1
     elseif key == "7" then
-        field.createdElement = Sand2
-    -----
+        field.tempChangeType = -1
+
 
     elseif key == "8" then
         field.createdElement = Smoke
+        field.tempChangeType = 0
 
     -----
     elseif key == "9" then
         field.createdElement = Smoke1
+        field.tempChangeType = 0
     elseif key == "0" then
         field.createdElement = Smoke2
+        field.tempChangeType = 0
     -----
 
     elseif key == "right" and field.isPauseUpdate then
@@ -352,9 +362,9 @@ function love.mousepressed(x, y, button, istouch)
             resizeFieldWindow.heightTextField.isFocused = false 
         end
     end
- end
+end
 
- function love.mousereleased(x, y, button) 
+function love.mousereleased(x, y, button) 
     if button == 1 then
         if isShowButtons then
             for i=1,#buttons do
@@ -368,8 +378,8 @@ function love.mousepressed(x, y, button, istouch)
         end
         isActiveItemPressed = false
     end
- end
+end
 
- function love.mousemoved( x, y, dx, dy, istouch )
-	field:updateMouseFieldPos(x, y)
+function love.mousemoved( x, y, dx, dy, istouch )
+    field:updateMouseFieldPos(x, y)
 end
