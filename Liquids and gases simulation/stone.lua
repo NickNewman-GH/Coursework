@@ -2,13 +2,8 @@ Stone = Static:extend()
 
 function Stone:new(x, y)
     Stone.super.new(self, x, y)
-    self.color = {0.5, 0.5, 0.5}
-end
-
-function Stone:update(fieldClass, newField, dt)
-    self:giveTempToOthers(fieldClass, dt)
-    self.color[1] = 0.5 - field.insideTemp/1500 + self.temp/1500
-    newField[self.y][self.x] = self:copy()
+    self.color = {0.5, 0.5, 0.5, 0.5}
+    self.thermalConductivity = 5
 end
 
 function Stone:copy()

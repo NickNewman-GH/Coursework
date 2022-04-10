@@ -200,12 +200,31 @@ function Gas:update(fieldClass, newField, updateType, dt)
                 end
             end
         end
+    elseif updateType == fieldClass.elementManager.updateTypes.REPLACE then
+        if self.tempBounds["lower"] and self.temp <= self.tempBounds["lower"][1] then
+            newField[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
+            newField[self.y][self.x].temp = self.temp
+            self.isUpdated = true
+        elseif self.tempBounds["upper"] and self.temp >= self.tempBounds["upper"][1] then
+            newField[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
+            newField[self.y][self.x].temp = self.temp
+            self.isUpdated = true
+        end
+        return
     end
+    self.color[4] = 0.5 - fieldClass.insideTemp/250 + self.temp/250
     newField[self.y][self.x] = self:copy()
     self.isUpdated = true
 end
 
 function Gas:getUpdateType(fieldClass)
+    if self.tempBounds then
+        if self.tempBounds["lower"] and self.temp <= self.tempBounds["lower"][1] then
+            return fieldClass.elementManager.updateTypes.REPLACE
+        elseif self.tempBounds["upper"] and self.temp >= self.tempBounds["upper"][1] then
+            return fieldClass.elementManager.updateTypes.REPLACE
+        end
+    end
     local isUpperBound = self.y == 1
     if isUpperBound then
         leftTargetCell = fieldClass.field[self.y][self.x - 1]
@@ -262,4 +281,25 @@ function Gas:getUpdateType(fieldClass)
         end
     end
     return fieldClass.elementManager.updateTypes.NONE
+end
+
+function Element:giveTempToOthers(fieldClass, dt)
+    local isOnObjectBorder = false
+    for i=-1,1 do
+        if self.y+i <= fieldClass.height and self.y+i > 0 then
+            for j=-1,1 do
+                if fieldClass.field[self.y+i][self.x+j] == 0 then
+                    isOnObjectBorder = true
+                end
+                if self.x+j <= fieldClass.width and self.x+j > 0 and not (fieldClass.field[self.y+i][self.x+j] == 0) then
+                    if not (i == 0 and (j == 0)) then
+                        fieldClass.field[self.y+i][self.x+j].temp = fieldClass.field[self.y+i][self.x+j].temp + (self.temp - fieldClass.field[self.y+i][self.x+j].temp)/fieldClass.field[self.y+i][self.x+j].thermalConductivity * dt
+                    end
+                end
+            end
+        end
+    end
+    if isOnObjectBorder then
+        self.temp = self.temp - (self.temp - fieldClass.insideTemp)/self.thermalConductivity * dt * 0.2
+    end
 end

@@ -6,7 +6,9 @@ function love.load()
     require "element"
     require "liquid"
     require "static"
+    require "ice"
     require "gas"
+    require "steam"
     require "solid"
     require "oil"
     require "sand"
@@ -22,7 +24,6 @@ function love.load()
     require "smoke"
     -----
     require "smoke1"
-    require "smoke2"
     -----
 
     windowWidth, windowHeight = 800, 800
@@ -31,7 +32,7 @@ function love.load()
     font = love.graphics.getFont()
     resizeFieldWindow = resizeFieldWindow()
 
-    field = Field(150, 150)
+    field = Field(100, 100)
     fullscreen = false
 
     isActiveItemPressed = false
@@ -71,15 +72,13 @@ function getKeysAssignmentInformation()
     return {
         love.graphics.newText(font, "Key Assignment:"),
         love.graphics.newText(font, "1 - Water (by default, dens = 900)"), 
-        love.graphics.newText(font, "2 - Oil (dens = 750)"),
+        love.graphics.newText(font, "2 - Oil (dens = 900)"),
         love.graphics.newText(font, "3 - Slime (dens = 800)"),
         love.graphics.newText(font, "4 - Stone (static)"),
-        love.graphics.newText(font, "5 - Sand 1 (dens = 1500)"),
-        love.graphics.newText(font, "6 - Heat"),
-        love.graphics.newText(font, "7 - Freeze"),
-        love.graphics.newText(font, "8 - Smoke 1 (dens = 15)"),
-        love.graphics.newText(font, "9 - Smoke 2 (dens = 10)"),
-        love.graphics.newText(font, "0 - Smoke 3 (dens = 5)"),
+        love.graphics.newText(font, "5 - Sand"),
+        love.graphics.newText(font, "6 - Smoke"),
+        love.graphics.newText(font, "7 - Heat"),
+        love.graphics.newText(font, "8 - Freeze"),
         love.graphics.newText(font, "Mwheel up - Larger particle creation area"),
         love.graphics.newText(font, "Mwheel down - Smaller particle creation area"),
         love.graphics.newText(font, "R - Clear field"),
@@ -108,10 +107,12 @@ function love.update(dt)
         updateWindowInformation()
     end
     if love.mouse.isDown(1) then
-        if not (field.tempChangeType == 0) then
-            field:changeElementsTemp(dt)
-        elseif not isActiveItemPressed then 
-            field:addElements()
+        if not isActiveItemPressed then
+            if not (field.tempChangeType == 0) then
+                field:changeElementsTemp(dt)
+            else
+                field:addElements()
+            end
         end
     elseif love.mouse.isDown(2) then
         field:removeElements()
@@ -152,7 +153,7 @@ function love.draw()
     end
 end
 
-function love.keypressed(key, scancode, isrepeat)
+function love.keypressed(key, scancode, isrepeat, dt)
     if (resizeFieldWindow.widthTextField.isFocused or resizeFieldWindow.heightTextField.isFocused) and 
     ((key == "1") or (key == "2") or (key == "3") or (key == "4") or (key == "5") or 
     (key == "6") or (key == "7") or (key == "8") or (key == "9") or  (key == "0") or 
@@ -211,29 +212,16 @@ function love.keypressed(key, scancode, isrepeat)
     elseif key == "5" then
         field.createdElement = Sand
         field.tempChangeType = 0
-
-
     elseif key == "6" then
-        field.tempChangeType = 1
-    elseif key == "7" then
-        field.tempChangeType = -1
-
-
-    elseif key == "8" then
         field.createdElement = Smoke
         field.tempChangeType = 0
-
-    -----
-    elseif key == "9" then
-        field.createdElement = Smoke1
-        field.tempChangeType = 0
-    elseif key == "0" then
-        field.createdElement = Smoke2
-        field.tempChangeType = 0
-    -----
+    elseif key == "7" then
+        field.tempChangeType = 1
+    elseif key == "8" then
+        field.tempChangeType = -1
 
     elseif key == "right" and field.isPauseUpdate then
-        field:update()
+        field:update(love.timer.getDelta())
     end
 end
 

@@ -2,11 +2,12 @@ ElementManager = Object:extend()
 
 function ElementManager:new()
     self.updateTypes = {
-        SWAP = 1,
-        MOVE = 2,
-        NONE = 3,
+        REPLACE = 1,
+        SWAP = 2,
+        MOVE = 3,
+        NONE = 4,
     }
-    self.updates = { {}, {}, {} } --SWAP, MOVE, NONE
+    self.updates = { {}, {}, {}, {} } -- REPLACE, SWAP, MOVE, NONE
 end
 
 function ElementManager:clearUpdates()
@@ -23,7 +24,9 @@ function ElementManager:getUpdates(fieldClass)
             local cell = fieldClass.field[i][j]
             if not (cell == 0) then
                 updateType = cell:getUpdateType(fieldClass)
-                if updateType == self.updateTypes.SWAP then
+                if updateType == self.updateTypes.REPLACE then
+                    table.insert(self.updates[updateType], {cell.y, cell.x})
+                elseif updateType == self.updateTypes.SWAP then
                     table.insert(self.updates[updateType], {cell.y, cell.x})
                 elseif updateType == self.updateTypes.MOVE then
                     table.insert(self.updates[updateType], {cell.y, cell.x})
@@ -42,4 +45,18 @@ function ElementManager:shuffleUpdates()
             self.updates[k][i], self.updates[k][j] = self.updates[k][j], self.updates[k][i]
         end
     end
+end
+
+function ElementManager:getAllElementShuffledCoords()
+    local coordsTable = {}
+    for k=1,#self.updates do
+        for i=1,#self.updates[k] do
+            table.insert(coordsTable, self.updates[k][i])
+        end
+    end
+    for i = #coordsTable, 2, -1 do
+        local j = love.math.random(i)
+        coordsTable[i], coordsTable[j] = coordsTable[j], coordsTable[i]
+    end
+    return coordsTable
 end

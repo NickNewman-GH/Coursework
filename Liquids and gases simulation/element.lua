@@ -8,7 +8,7 @@ function Element:new(x, y)
     self.isUpdated = false
     self.density = 999999
     self.temp = 25
-    self.thermalConductivity = 250
+    self.thermalConductivity = 1
 end
 
 function Element:update(fieldClass, newField, dt)

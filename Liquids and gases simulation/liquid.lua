@@ -201,14 +201,31 @@ function Liquid:update(fieldClass, newField, updateType, dt)
                 end
             end
         end
+    elseif updateType == fieldClass.elementManager.updateTypes.REPLACE then
+        if self.tempBounds["lower"] and self.temp <= self.tempBounds["lower"][1] then
+            newField[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
+            newField[self.y][self.x].temp = self.temp
+            self.isUpdated = true
+        elseif self.tempBounds["upper"] and self.temp >= self.tempBounds["upper"][1] then
+            newField[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
+            newField[self.y][self.x].temp = self.temp
+            self.isUpdated = true
+        end
+        return
     end
+    self.color[4] = 0.5 - fieldClass.insideTemp/100 + self.temp/100
     newField[self.y][self.x] = self:copy()
-    -- newField[self.y][self.x].temp = self.temp
-    -- newField[self.y][self.x].color[1] = self.color[1] + self.temp/100
     self.isUpdated = true
 end
 
 function Liquid:getUpdateType(fieldClass)
+    if self.tempBounds then
+        if self.tempBounds["lower"] and self.temp <= self.tempBounds["lower"][1] then
+            return fieldClass.elementManager.updateTypes.REPLACE
+        elseif self.tempBounds["upper"] and self.temp >= self.tempBounds["upper"][1] then
+            return fieldClass.elementManager.updateTypes.REPLACE
+        end
+    end
     local isLowerBound = self.y == fieldClass.height
     if isLowerBound then
         leftTargetCell = fieldClass.field[self.y][self.x - 1]

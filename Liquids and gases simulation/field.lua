@@ -21,7 +21,7 @@ function Field:new(width, height)
     self.mouseFieldYPos = nil
 
     self.tempChangeType = 0
-    self.tempChangePerSec = 100
+    self.tempChangePerSec = 250
 
     self.insideTemp = 25
 end
@@ -65,6 +65,11 @@ end
 function Field:update(dt)
     local newField = self:newField()
     self.elementManager:getUpdates(self)
+    local coordsTable = self.elementManager:getAllElementShuffledCoords()
+    for i=1,#coordsTable do
+        local coords = coordsTable[i]
+        self.field[coords[1]][coords[2]]:giveTempToOthers(self, dt)
+    end
     self.elementManager:shuffleUpdates()
     for i=1,#self.elementManager.updates do
         for j=1,#self.elementManager.updates[i] do
