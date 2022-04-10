@@ -12,7 +12,7 @@ function Liquid:update(fieldClass, newField, updateType, dt)
             local isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
             local isDownLeftReachable = not isLowerBound and self.x - 1 > 0 and (fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0)
             local isDownRightReachable = not isLowerBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0)
-            if isDownReachable or isDownRightReachable or isDownLeftReachable then
+            if isDownReachable then
                 local gravRand = 0
                 if self.gravity >= 5 then
                     gravRand = love.math.random(-1,1)
@@ -140,13 +140,108 @@ function Liquid:update(fieldClass, newField, updateType, dt)
             fieldClass.field[self.y + 1][self.x].isUpdated = true
             self.y = self.y + 1
         else
-            local targetCellLeft, targetCellRight = nil, nil
+            local targetCellDownLeft, targetCellDownRight = nil, nil
             if not isLowerBound then
-                targetCellLeft = fieldClass.field[self.y + 1][self.x - 1]
-                targetCellRight = fieldClass.field[self.y + 1][self.x + 1]
+                targetCellDownLeft = fieldClass.field[self.y + 1][self.x - 1]
+                targetCellDownRight = fieldClass.field[self.y + 1][self.x + 1]
             end
-            local isDownLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density < self.density
-            local isDownRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density < self.density
+            local targetCellLeft, targetCellRight = fieldClass.field[self.y][self.x - 1], fieldClass.field[self.y][self.x + 1]
+
+            local isDownLeftCanBeSwapped = not (targetCellDownLeft == 0) and not (targetCellDownLeft == nil) and not targetCellDownLeft.isUpdated and targetCellDownLeft.density and targetCellDownLeft.density < self.density
+            local isDownRightCanBeSwapped = not (targetCellDownRight == 0) and not (targetCellDownRight == nil) and not targetCellDownRight.isUpdated and targetCellDownRight.density and targetCellDownRight.density < self.density
+            --local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density <= self.density
+            --local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density <= self.density
+            
+            -- if isDownLeftCanBeSwapped and isDownRightCanBeSwapped then sideChoice = love.math.random(0,1)
+            -- elseif isDownLeftCanBeSwapped then sideChoice = 0
+            -- elseif isDownRightCanBeSwapped then sideChoice = 1
+            -- elseif isLeftCanBeSwapped and isRightCanBeSwapped then sideChoice = love.math.random(0,1)
+            -- elseif isLeftCanBeSwapped then sideChoice = 0
+            -- elseif isRightCanBeSwapped then sideChoice = 1
+            -- end
+
+            -- if sideChoice == 0 then
+            --     local energy = self.dispersionRate
+            --     for i=1,self.dispersionRate do
+            --         if isDownLeftCanBeSwapped then
+            --             local y = self.y + 1
+            --             local x = self.x - 1
+            --             targetCellDownLeft.y = targetCellDownLeft.y - 1
+            --             targetCellDownLeft.x = targetCellDownLeft.x + 1
+            --             newField[self.y][self.x] = targetCellDownLeft:copy()
+            --             fieldClass.field[y][x].isUpdated = true
+            --             self.y, self.x = y, x
+            --         elseif isLeftCanBeSwapped then
+            --             targetCellLeft.x = targetCellLeft.x + 1
+            --             newField[self.y][self.x] = targetCellLeft:copy()
+            --             fieldClass.field[self.y][self.x - 1].isUpdated = true
+            --             self.x = self.x - 1
+            --         end
+            --         isLowerBound = self.y == fieldClass.height
+            --         if not isLowerBound then
+            --             targetCellDown = fieldClass.field[self.y + 1][self.x]
+            --             targetCellDownLeft = fieldClass.field[self.y + 1][self.x - 1]
+            --         else
+            --             targetCellDown = nil
+            --             targetCellDownLeft = nil
+            --         end
+            --         targetCellLeft = fieldClass.field[self.y][self.x - 1]
+            --         isDownCanBeSwapped = not (targetCellDown == nil) and not (targetCellDown == 0) and not targetCellDown.isUpdated and targetCellDown.density and targetCellDown.density < self.density
+            --         isDownLeftCanBeSwapped = not (targetCellDownLeft == nil) and not (targetCellDownLeft == 0) and not targetCellDownLeft.isUpdated and targetCellDownLeft.density and targetCellDownLeft.density < self.density
+            --         isLeftCanBeSwapped = not (targetCellLeft == nil) and not (targetCellLeft == 0) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density <= self.density
+            --         if not (isDownLeftReachable or isLeftReachable) then
+            --             break
+            --         end
+            --         energy = energy - 1
+            --         if isDownReachable then
+            --             energy = energy - self.dispersionRate/3
+            --         end
+            --         if energy < 1 then
+            --             break
+            --         end
+            --     end
+            -- elseif sideChoice == 1 then
+            --     local energy = self.dispersionRate * 10
+            --     for i=1,self.dispersionRate * 10 do
+            --         if isDownRightCanBeSwapped then
+            --             local y = self.y + 1
+            --             local x = self.x + 1
+            --             targetCellDownRight.y = targetCellDownRight.y - 1
+            --             targetCellDownRight.x = targetCellDownRight.x - 1
+            --             newField[self.y][self.x] = targetCellDownRight:copy()
+            --             fieldClass.field[y][x].isUpdated = true
+            --             self.y, self.x = y, x
+            --         elseif isRightCanBeSwapped then
+            --             targetCellRight.x = targetCellRight.x - 1
+            --             newField[self.y][self.x] = targetCellRight:copy()
+            --             fieldClass.field[self.y][self.x + 1].isUpdated = true
+            --             self.x = self.x + 1
+            --         end
+            --         isLowerBound = self.y == fieldClass.height
+            --         if not isLowerBound then
+            --             targetCellDown = fieldClass.field[self.y + 1][self.x]
+            --             targetCellDownRight = fieldClass.field[self.y + 1][self.x + 1]
+            --         else
+            --             targetCellDown = nil
+            --             targetCellDownRight = nil
+            --         end
+            --         targetCellRight = fieldClass.field[self.y][self.x + 1]
+            --         isDownCanBeSwapped = not (targetCellDown == nil) and not (targetCellDown == 0) and not targetCellDown.isUpdated and targetCellDown.density and targetCellDown.density < self.density
+            --         isDownRightCanBeSwapped = not (targetCellDownRight == nil) and not (targetCellDownRight == 0) and not targetCellDownRight.isUpdated and targetCellDownRight.density and targetCellDownRight.density < self.density
+            --         isRightCanBeSwapped = not (targetCellRight == nil) and not (targetCellRight == 0) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density <= self.density
+            --         if not (isDownRightReachable or isRightReachable) then
+            --             break
+            --         end
+            --         energy = energy - 1
+            --         if isDownReachable then
+            --             energy = energy - self.dispersionRate/3
+            --         end
+            --         if energy < 1 then
+            --             break
+            --         end
+            --     end
+            -- end
+
             if isDownLeftCanBeSwapped and isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = nil
@@ -161,23 +256,21 @@ function Liquid:update(fieldClass, newField, updateType, dt)
             elseif isDownLeftCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x - 1
-                targetCellLeft.y = targetCellLeft.y - 1
-                targetCellLeft.x = targetCellLeft.x + 1
-                newField[self.y][self.x] = targetCellLeft:copy()
+                targetCellDownLeft.y = targetCellDownLeft.y - 1
+                targetCellDownLeft.x = targetCellDownLeft.x + 1
+                newField[self.y][self.x] = targetCellDownLeft:copy()
                 fieldClass.field[y][x].isUpdated = true
                 self.y, self.x = y, x
             elseif isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x + 1
-                targetCellRight.y = targetCellRight.y - 1
-                targetCellRight.x = targetCellRight.x - 1
-                newField[self.y][self.x] = targetCellRight:copy()
+                targetCellDownRight.y = targetCellDownRight.y - 1
+                targetCellDownRight.x = targetCellDownRight.x - 1
+                newField[self.y][self.x] = targetCellDownRight:copy()
                 fieldClass.field[y][x].isUpdated = true
                 self.y, self.x = y, x
             else
-                targetCellLeft = fieldClass.field[self.y][self.x - 1]
                 local isLeftCanBeSwapped = not (targetCellLeft == 0) and not (targetCellLeft == nil) and not targetCellLeft.isUpdated and targetCellLeft.density and targetCellLeft.density <= self.density
-                targetCellRight = fieldClass.field[self.y][self.x + 1]
                 local isRightCanBeSwapped = not (targetCellRight == 0) and not (targetCellRight == nil) and not targetCellRight.isUpdated and targetCellRight.density and targetCellRight.density <= self.density
                 if isLeftCanBeSwapped and isRightCanBeSwapped then
                     local x = nil
