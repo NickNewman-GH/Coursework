@@ -2,10 +2,13 @@ Sand = Solid:extend()
 
 function Sand:new(x, y)
     Sand.super.new(self, x, y)
-    self.color = {0.82, 0.65, 0}
+    self.color = {0.82, 0.65, 0, 0.5}
     self.density = 1500
 end
 
 function Sand:copy()
-    return Sand(self.x, self.y)
+    local elem = Sand(self.x, self.y)
+    elem.temp = self.temp
+    elem.color = self.color
+    return elem
 end
