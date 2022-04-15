@@ -2,7 +2,7 @@ Sand = Solid:extend()
 
 function Sand:new(x, y)
     Sand.super.new(self, x, y)
-    self.color = {0.82, 0.65, 0, 0.5}
+    self.color = {0.82, 0.65, 0, 0.65}
     self.density = 1500
 end
 

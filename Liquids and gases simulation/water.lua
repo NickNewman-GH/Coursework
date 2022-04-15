@@ -2,7 +2,7 @@ Water = Liquid:extend()
 
 function Water:new(x, y)
     Water.super.new(self, x, y)
-    self.color = {0, 0.72, 0.94, 0.5}
+    self.color = {0, 0.72, 0.94, 0.65}
     self.dispersionRate = field.width / 10
     self.density = 900
     self.thermalConductivity = 2.5

@@ -306,7 +306,10 @@ function Liquid:update(fieldClass, newField, updateType, dt)
         end
         return
     end
-    self.color[4] = 0.5 - fieldClass.insideTemp/100 + self.temp/100
+    self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
+    if self.color[4] < 0.3 then
+        self.color[4] = 0.3
+    end
     newField[self.y][self.x] = self:copy()
     self.isUpdated = true
 end
