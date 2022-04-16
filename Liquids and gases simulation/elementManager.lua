@@ -47,11 +47,13 @@ function ElementManager:shuffleUpdates()
     end
 end
 
-function ElementManager:getAllElementShuffledCoords()
+function ElementManager:getAllElementShuffledCoords(fieldClass)
     local coordsTable = {}
-    for k=1,#self.updates do
-        for i=1,#self.updates[k] do
-            table.insert(coordsTable, self.updates[k][i])
+    for i=1,fieldClass.height do
+        for j=1,fieldClass.width do
+            if not (fieldClass.field[i][j] == 0) then
+                table.insert(coordsTable, {i, j})
+            end
         end
     end
     for i = #coordsTable, 2, -1 do

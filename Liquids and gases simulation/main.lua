@@ -373,3 +373,5 @@ end
 function love.mousemoved( x, y, dx, dy, istouch )
     field:updateMouseFieldPos(x, y)
 end
+
+function lerp(a,b,t) return (1-t)*a + t*b end
