@@ -14,3 +14,10 @@ function Slime:copy()
     elem.color = self.color
     return elem
 end
+
+function Slime:colorChangeDueTemp(fieldClass)
+    self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
+    if self.color[4] < 0.3 then
+        self.color[4] = 0.3
+    end
+end

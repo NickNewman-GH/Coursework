@@ -86,10 +86,7 @@ function Solid:update(fieldClass, newField, updateType, dt)
         end
         return
     end
-    self.color[4] = 0.7 - fieldClass.insideTemp/250 + self.temp/250
-    if self.color[4] < 0.4 then
-        self.color[4] = 0.4
-    end
+    self:colorChangeDueTemp(fieldClass)
     newField[self.y][self.x] = self:copy()
     self.isUpdated = true
 end

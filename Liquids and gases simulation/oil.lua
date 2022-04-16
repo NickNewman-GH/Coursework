@@ -14,3 +14,10 @@ function Oil:copy()
     elem.color = self.color
     return elem
 end
+
+function Oil:colorChangeDueTemp(fieldClass)
+    self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
+    if self.color[4] < 0.3 then
+        self.color[4] = 0.3
+    end
+end

@@ -39,3 +39,10 @@ function Element:giveTempToOthers(fieldClass, dt)
         self.temp = self.temp - (self.temp - fieldClass.insideTemp)/self.thermalConductivity * dt
     end
 end
+
+function Element:colorChangeDueTemp()
+    self.color[4] = 0.65 - fieldClass.insideTemp + self.temp
+    if self.color[4] < 0.3 then
+        self.color[4] = 0.3
+    end
+end

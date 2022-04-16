@@ -14,3 +14,10 @@ function Smoke:copy()
     elem.color = self.color
     return elem
 end
+
+function Smoke:colorChangeDueTemp(fieldClass)
+    self.color[4] = 0.65 - fieldClass.insideTemp/250 + self.temp/250
+    if self.color[4] < 0.3 then
+        self.color[4] = 0.3
+    end
+end
