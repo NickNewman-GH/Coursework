@@ -233,7 +233,7 @@ function love.resize(w, h)
 end
 
 function love.wheelmoved(x, y)
-    if y > 0 and field.creationAreaSideSize < 20 then
+    if y > 0 and field.creationAreaSideSize < ((field.width + field.height) / 5) then
         field.creationAreaSideSize = field.creationAreaSideSize + 2
     elseif y < 0 and field.creationAreaSideSize > 1 then
         field.creationAreaSideSize = field.creationAreaSideSize - 2
