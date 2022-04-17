@@ -10,13 +10,6 @@ function Water:new(x, y)
     self:colorChangeDueTemp()
 end
 
-function Water:copy()
-    local elem = Water(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Water:colorChangeDueTemp(fieldClass)
     local lowerBound = 0
     local upperBound = 100

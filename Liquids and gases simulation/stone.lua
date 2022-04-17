@@ -7,13 +7,6 @@ function Stone:new(x, y)
     self.tempBounds = {upper = {1000, Lava}}
 end
 
-function Stone:copy()
-    local elem = Stone(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Stone:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/500 + self.temp/500
     if self.color[4] < 0.3 then

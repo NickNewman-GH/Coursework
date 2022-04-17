@@ -8,13 +8,6 @@ function Slime:new(x, y)
     self.thermalConductivity = 5
 end
 
-function Slime:copy()
-    local elem = Slime(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Slime:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
     if self.color[4] < 0.3 then

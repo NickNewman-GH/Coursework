@@ -5,7 +5,3 @@ function Sand1:new(x, y)
     self.color = {0.25, 0.25, 0.75}
     self.density = 950
 end
-
-function Sand1:copy()
-    return Sand1(self.x, self.y)
-end

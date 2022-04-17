@@ -46,19 +46,3 @@ function ElementManager:shuffleUpdates()
         end
     end
 end
-
-function ElementManager:getAllElementShuffledCoords(fieldClass)
-    local coordsTable = {}
-    for i=1,fieldClass.height do
-        for j=1,fieldClass.width do
-            if not (fieldClass.field[i][j] == 0) then
-                table.insert(coordsTable, {i, j})
-            end
-        end
-    end
-    for i = #coordsTable, 2, -1 do
-        local j = love.math.random(i)
-        coordsTable[i], coordsTable[j] = coordsTable[j], coordsTable[i]
-    end
-    return coordsTable
-end

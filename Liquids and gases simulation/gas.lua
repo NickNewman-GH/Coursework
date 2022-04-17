@@ -5,13 +5,14 @@ function Gas:new(x, y)
     self.dispersionRate = 0
 end
 
-function Gas:update(fieldClass, newField, updateType, dt)
+function Gas:update(fieldClass, updateType, dt)
     if updateType == fieldClass.elementManager.updateTypes.MOVE then
+        fieldClass.field[self.y][self.x] = 0
         local isUpperBound = self.y == 1
         if not isUpperBound then
-            local isUpReachable = not isUpperBound and (fieldClass.field[self.y - 1][self.x] == 0 and newField[self.y - 1][self.x] == 0)
-            local isUpLeftReachable = not isUpperBound and self.x - 1 > 0 and (fieldClass.field[self.y - 1][self.x - 1] == 0 and newField[self.y - 1][self.x - 1] == 0)
-            local isUpRightReachable = not isUpperBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y - 1][self.x + 1] == 0 and newField[self.y - 1][self.x + 1] == 0)
+            local isUpReachable = not isUpperBound and fieldClass.field[self.y - 1][self.x] == 0
+            local isUpLeftReachable = not isUpperBound and self.x - 1 > 0 and fieldClass.field[self.y - 1][self.x - 1] == 0
+            local isUpRightReachable = not isUpperBound and self.x + 1 <= fieldClass.width and fieldClass.field[self.y - 1][self.x + 1] == 0
             if isUpReachable or isUpRightReachable or isUpLeftReachable then
                 local gravRand = 0
                 if self.gravity >= 5 then
@@ -37,16 +38,16 @@ function Gas:update(fieldClass, newField, updateType, dt)
                         end
                     end
                     isUpperBound = self.y == 1
-                    isUpReachable = not isUpperBound and (fieldClass.field[self.y - 1][self.x] == 0 and newField[self.y - 1][self.x] == 0)
-                    isUpLeftReachable = not isUpperBound and self.x - 1 > 0 and (fieldClass.field[self.y - 1][self.x - 1] == 0 and newField[self.y - 1][self.x - 1] == 0)
-                    isUpRightReachable = not isUpperBound and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y - 1][self.x + 1] == 0 and newField[self.y - 1][self.x + 1] == 0)
+                    isUpReachable = not isUpperBound and fieldClass.field[self.y - 1][self.x] == 0
+                    isUpLeftReachable = not isUpperBound and self.x - 1 > 0 and fieldClass.field[self.y - 1][self.x - 1] == 0 
+                    isUpRightReachable = not isUpperBound and self.x + 1 <= fieldClass.width and fieldClass.field[self.y - 1][self.x + 1] == 0
                     if isUpperBound then break end
                 end
             else
-                local isUpLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y - 1][self.x - 1] == 0 and newField[self.y - 1][self.x - 1] == 0)
-                local isUpRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y - 1][self.x + 1] == 0 and newField[self.y - 1][self.x + 1] == 0)
-                local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-                local isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+                local isUpLeftReachable = self.x - 1 > 0 and fieldClass.field[self.y - 1][self.x - 1] == 0
+                local isUpRightReachable = self.x + 1 <= fieldClass.width and fieldClass.field[self.y - 1][self.x + 1] == 0
+                local isLeftReachable = self.x - 1 > 0 and fieldClass.field[self.y][self.x - 1] == 0
+                local isRightReachable = self.x + 1 <= fieldClass.width and fieldClass.field[self.y][self.x + 1] == 0
                 local sideChoice = -1
 
                 if isUpLeftReachable and isUpRightReachable then sideChoice = love.math.random(0,1)
@@ -66,9 +67,9 @@ function Gas:update(fieldClass, newField, updateType, dt)
                         elseif isLeftReachable then
                             self.x = self.x - 1
                         end
-                        isUpReachable = self.y > 1 and (fieldClass.field[self.y - 1][self.x] == 0 and newField[self.y - 1][self.x] == 0)
-                        isUpLeftReachable = self.y > 1 and self.x - 1 > 0 and (fieldClass.field[self.y - 1][self.x - 1] == 0 and newField[self.y - 1][self.x - 1] == 0)
-                        isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+                        isUpReachable = self.y > 1 and fieldClass.field[self.y - 1][self.x] == 0
+                        isUpLeftReachable = self.y > 1 and self.x - 1 > 0 and fieldClass.field[self.y - 1][self.x - 1] == 0
+                        isLeftReachable = self.x - 1 > 0 and fieldClass.field[self.y][self.x - 1] == 0
                         if not (isUpLeftReachable or isLeftReachable) then
                             break
                         end
@@ -89,9 +90,9 @@ function Gas:update(fieldClass, newField, updateType, dt)
                         elseif isRightReachable then
                             self.x = self.x + 1
                         end
-                        isUpReachable = self.y > 1 and (fieldClass.field[self.y - 1][self.x] == 0 and newField[self.y - 1][self.x] == 0)
-                        isUpRightReachable = self.y > 1 and self.x + 1 <= fieldClass.width and (fieldClass.field[self.y - 1][self.x + 1] == 0 and newField[self.y - 1][self.x + 1] == 0)
-                        isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+                        isUpReachable = self.y > 1 and fieldClass.field[self.y - 1][self.x] == 0
+                        isUpRightReachable = self.y > 1 and self.x + 1 <= fieldClass.width and fieldClass.field[self.y - 1][self.x + 1] == 0
+                        isRightReachable = self.x + 1 <= fieldClass.width and fieldClass.field[self.y][self.x + 1] == 0
                         if not (isUpRightReachable or isRightReachable) then
                             break
                         end
@@ -106,8 +107,8 @@ function Gas:update(fieldClass, newField, updateType, dt)
                 end
             end
         else
-            local isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
-            local isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+            local isLeftReachable = self.x - 1 > 0 and fieldClass.field[self.y][self.x - 1] == 0
+            local isRightReachable = self.x + 1 <= fieldClass.width and fieldClass.field[self.y][self.x + 1] == 0
             if isLeftReachable and isRightReachable then
                 local sideChoice = love.math.random(0,1)
                 if sideChoice == 0 then self.x = self.x - 1
@@ -115,13 +116,13 @@ function Gas:update(fieldClass, newField, updateType, dt)
             elseif isLeftReachable then
                 for i=1,self.dispersionRate do
                     self.x = self.x - 1
-                    isLeftReachable = self.x - 1 > 0 and (fieldClass.field[self.y][self.x - 1] == 0 and newField[self.y][self.x - 1] == 0)
+                    isLeftReachable = self.x - 1 > 0 and fieldClass.field[self.y][self.x - 1] == 0
                     if not isLeftReachable then break end
                 end
             elseif isRightReachable then
                 for i=1,self.dispersionRate do
                     self.x = self.x + 1
-                    isRightReachable = self.x + 1 <= fieldClass.width and (fieldClass.field[self.y][self.x + 1] == 0 and newField[self.y][self.x + 1] == 0)
+                    isRightReachable = self.x + 1 <= fieldClass.width and fieldClass.field[self.y][self.x + 1] == 0
                     if not isRightReachable then break end
                 end
             end
@@ -135,7 +136,7 @@ function Gas:update(fieldClass, newField, updateType, dt)
         local isUpCanBeSwapped = not (targetCellDown == 0) and not (targetCellDown == nil) and not targetCellDown.isUpdated and targetCellDown.density and targetCellDown.density > self.density
         if isUpCanBeSwapped then
             targetCellDown.y = targetCellDown.y + 1
-            newField[self.y][self.x] = targetCellDown:copy()
+            fieldClass.field[self.y][self.x] = targetCellDown
             fieldClass.field[self.y - 1][self.x].isUpdated = true
             self.y = self.y - 1
         else
@@ -154,24 +155,24 @@ function Gas:update(fieldClass, newField, updateType, dt)
                 local chosedCell = fieldClass.field[y][x]
                 chosedCell.y = chosedCell.y + 1
                 chosedCell.x = chosedCell.x + (self.x - x)
-                newField[self.y][self.x] = chosedCell:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = chosedCell
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             elseif isUpLeftCanBeSwapped then
                 local y = self.y - 1
                 local x = self.x - 1
                 targetCellLeft.y = targetCellLeft.y + 1
                 targetCellLeft.x = targetCellLeft.x + 1
-                newField[self.y][self.x] = targetCellLeft:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = targetCellLeft
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             elseif isUpRightCanBeSwapped then
                 local y = self.y - 1
                 local x = self.x + 1
                 targetCellRight.y = targetCellRight.y + 1
                 targetCellRight.x = targetCellRight.x - 1
-                newField[self.y][self.x] = targetCellRight:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = targetCellRight
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             else
                 targetCellLeft = fieldClass.field[self.y][self.x - 1]
@@ -184,37 +185,37 @@ function Gas:update(fieldClass, newField, updateType, dt)
                     else x = self.x + 1 end
                     local chosedCell = fieldClass.field[self.y][x]
                     chosedCell.x = chosedCell.x + (self.x - x)
-                    newField[self.y][self.x] = chosedCell:copy()
-                    fieldClass.field[self.y][x].isUpdated = true
+                    fieldClass.field[self.y][self.x] = chosedCell
+                    fieldClass.field[self.y][self.x].isUpdated = true
                     self.x = x
                 elseif isLeftCanBeSwapped then
                     targetCellLeft.x = targetCellLeft.x + 1
-                    newField[self.y][self.x] = targetCellLeft:copy()
-                    fieldClass.field[self.y][self.x - 1].isUpdated = true
+                    fieldClass.field[self.y][self.x] = targetCellLeft
+                    fieldClass.field[self.y][self.x].isUpdated = true
                     self.x = self.x - 1
                 elseif isRightCanBeSwapped then
                     targetCellRight.x = targetCellRight.x - 1
-                    newField[self.y][self.x] = targetCellRight:copy()
-                    fieldClass.field[self.y][self.x + 1].isUpdated = true
+                    fieldClass.field[self.y][self.x] = targetCellRight
+                    fieldClass.field[self.y][self.x].isUpdated = true
                     self.x = self.x + 1
                 end
             end
         end
     elseif updateType == fieldClass.elementManager.updateTypes.REPLACE then
         if self.tempBounds["lower"] and self.temp < self.tempBounds["lower"][1] then
-            newField[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         elseif self.tempBounds["upper"] and self.temp > self.tempBounds["upper"][1] then
-            newField[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         end
         return
     end
     self:colorChangeDueTemp(fieldClass)
-    newField[self.y][self.x] = self:copy()
     self.isUpdated = true
+    fieldClass.field[self.y][self.x] = self
 end
 
 function Gas:getUpdateType(fieldClass)
@@ -281,25 +282,4 @@ function Gas:getUpdateType(fieldClass)
         end
     end
     return fieldClass.elementManager.updateTypes.NONE
-end
-
-function Element:giveTempToOthers(fieldClass, dt)
-    local isOnObjectBorder = false
-    for i=-1,1 do
-        if self.y+i <= fieldClass.height and self.y+i > 0 then
-            for j=-1,1 do
-                if fieldClass.field[self.y+i][self.x+j] == 0 then
-                    isOnObjectBorder = true
-                end
-                if self.x+j <= fieldClass.width and self.x+j > 0 and not (fieldClass.field[self.y+i][self.x+j] == 0) then
-                    if not (i == 0 and (j == 0)) then
-                        fieldClass.field[self.y+i][self.x+j].temp = fieldClass.field[self.y+i][self.x+j].temp + (self.temp - fieldClass.field[self.y+i][self.x+j].temp)/fieldClass.field[self.y+i][self.x+j].thermalConductivity * dt
-                    end
-                end
-            end
-        end
-    end
-    if isOnObjectBorder then
-        self.temp = self.temp - (self.temp - fieldClass.insideTemp)/self.thermalConductivity * dt * 0.2
-    end
 end

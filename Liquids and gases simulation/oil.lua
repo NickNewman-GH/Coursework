@@ -8,13 +8,6 @@ function Oil:new(x, y)
     self.thermalConductivity = 2
 end
 
-function Oil:copy()
-    local elem = Oil(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Oil:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
     if self.color[4] < 0.3 then

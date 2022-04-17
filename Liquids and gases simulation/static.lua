@@ -5,21 +5,21 @@ function Static:new(x, y)
     self.density = nil
 end
 
-function Static:update(fieldClass, newField, updateType, dt)
+function Static:update(fieldClass, updateType, dt)
     if updateType == fieldClass.elementManager.updateTypes.REPLACE then
         if self.tempBounds["lower"] and self.temp < self.tempBounds["lower"][1] then
-            newField[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         elseif self.tempBounds["upper"] and self.temp > self.tempBounds["upper"][1] then
-            newField[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         end
         return
     end
     self:colorChangeDueTemp(fieldClass)
-    newField[self.y][self.x] = self:copy()
+    fieldClass.field[self.y][self.x] = self
     self.isUpdated = true
 end
 

@@ -15,10 +15,6 @@ function Element:update(fieldClass, newField, dt)
     return
 end
 
-function Element:copy()
-    return
-end
-
 function Element:giveTempToOthers(fieldClass, dt)
     local isOnObjectBorder = false
     for i=-1,1 do

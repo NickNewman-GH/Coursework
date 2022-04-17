@@ -63,11 +63,13 @@ function Field:updateMouseFieldPos(mouseX, mouseY)
 end
 
 function Field:update(dt)
-    local newField = self:newField()
-    local coordsTable = self.elementManager:getAllElementShuffledCoords(self)
-    for i=1,#coordsTable do
-        local coords = coordsTable[i]
-        self.field[coords[1]][coords[2]]:giveTempToOthers(self, dt)
+    for i=1,#self.field do
+        for j=1,#self.field[i] do
+            if not (self.field[i][j] == 0) then
+                self.field[i][j]:giveTempToOthers(self, dt)
+                self.field[i][j].isUpdated = false
+            end
+        end
     end
     self.elementManager:getUpdates(self)
     self.elementManager:shuffleUpdates()
@@ -76,11 +78,10 @@ function Field:update(dt)
             local coords = self.elementManager.updates[i][j]
             local cell = self.field[coords[1]][coords[2]]
             if not cell.isUpdated then 
-                cell:update(self, newField, i, dt)
+                cell:update(self, i, dt)
             end
         end
     end
-    self.field = newField
 end
 
 function Field:sizesComputing(windowWidth, windowHeight)

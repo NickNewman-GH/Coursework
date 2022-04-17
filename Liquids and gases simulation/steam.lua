@@ -9,13 +9,6 @@ function Steam:new(x, y)
     self.thermalConductivity = 2
 end
 
-function Steam:copy()
-    local elem = Steam(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Steam:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/250 + self.temp/250
     if self.color[4] < 0.3 then

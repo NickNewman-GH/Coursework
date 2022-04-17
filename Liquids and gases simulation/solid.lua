@@ -4,16 +4,17 @@ function Solid:new(x, y)
     Solid.super.new(self, x, y)
 end
 
-function Solid:update(fieldClass, newField, updateType, dt)
+function Solid:update(fieldClass, updateType, dt)
     if updateType == fieldClass.elementManager.updateTypes.MOVE then
-        local isDownReachable = fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0
-        local isDownLeftReachable = fieldClass.field[self.y + 1][self.x - 1] == 0 and newField[self.y + 1][self.x - 1] == 0
-        local isDownRightReachable = fieldClass.field[self.y + 1][self.x + 1] == 0 and newField[self.y + 1][self.x + 1] == 0
+        fieldClass.field[self.y][self.x] = 0
+        local isDownReachable = fieldClass.field[self.y + 1][self.x] == 0
+        local isDownLeftReachable = fieldClass.field[self.y + 1][self.x - 1] == 0
+        local isDownRightReachable = fieldClass.field[self.y + 1][self.x + 1] == 0 
         if isDownReachable then
             for i=1,self.gravity do
                 self.y = self.y + 1
                 local isLowerBound = self.y == fieldClass.height
-                isDownReachable = not isLowerBound and (fieldClass.field[self.y + 1][self.x] == 0 and newField[self.y + 1][self.x] == 0)
+                isDownReachable = not isLowerBound and fieldClass.field[self.y + 1][self.x] == 0
                 if not isDownReachable then
                     break
                 end
@@ -37,8 +38,8 @@ function Solid:update(fieldClass, newField, updateType, dt)
         local isDownCanBeSwapped = not (targetCell == 0) and not targetCell.isUpdated and targetCell.density and targetCell.density < self.density
         if isDownCanBeSwapped then
             targetCell.y = targetCell.y - 1
-            newField[self.y][self.x] = targetCell:copy()
-            fieldClass.field[self.y + 1][self.x].isUpdated = true
+            fieldClass.field[self.y][self.x] = targetCell
+            fieldClass.field[self.y][self.x].isUpdated = true
             self.y = self.y + 1
         else
             local targetCellLeft = fieldClass.field[self.y + 1][self.x - 1]
@@ -53,41 +54,41 @@ function Solid:update(fieldClass, newField, updateType, dt)
                 local chosedCell = fieldClass.field[y][x]
                 chosedCell.y = chosedCell.y - 1
                 chosedCell.x = chosedCell.x + (self.x - x)
-                newField[self.y][self.x] = chosedCell:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = chosedCell
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             elseif isDownLeftCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x - 1
                 targetCellLeft.y = targetCellLeft.y - 1
                 targetCellLeft.x = targetCellLeft.x + 1
-                newField[self.y][self.x] = targetCellLeft:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = targetCellLeft
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             elseif isDownRightCanBeSwapped then
                 local y = self.y + 1
                 local x = self.x + 1
                 targetCellRight.y = targetCellRight.y - 1
                 targetCellRight.x = targetCellRight.x - 1
-                newField[self.y][self.x] = targetCellRight:copy()
-                fieldClass.field[y][x].isUpdated = true
+                fieldClass.field[self.y][self.x] = targetCellRight
+                fieldClass.field[self.y][self.x].isUpdated = true
                 self.y, self.x = y, x
             end
         end
     elseif updateType == fieldClass.elementManager.updateTypes.REPLACE then
         if self.tempBounds["lower"] and self.temp < self.tempBounds["lower"][1] then
-            newField[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["lower"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         elseif self.tempBounds["upper"] and self.temp > self.tempBounds["upper"][1] then
-            newField[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
-            newField[self.y][self.x].temp = self.temp
+            fieldClass.field[self.y][self.x] = self.tempBounds["upper"][2](self.x, self.y)
+            fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         end
         return
     end
     self:colorChangeDueTemp(fieldClass)
-    newField[self.y][self.x] = self:copy()
+    fieldClass.field[self.y][self.x] = self
     self.isUpdated = true
 end
 

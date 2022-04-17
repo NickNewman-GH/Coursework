@@ -9,13 +9,6 @@ function Lava:new(x, y)
     self.tempBounds = {lower = {700, SolidStone}}
 end
 
-function Lava:copy()
-    local elem = Lava(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function Lava:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/100 + self.temp/100
     if self.color[4] < 0.3 then

@@ -7,13 +7,6 @@ function SolidStone:new(x, y)
     self.tempBounds = {upper = {1000, Lava}}
 end
 
-function SolidStone:copy()
-    local elem = SolidStone(self.x, self.y)
-    elem.temp = self.temp
-    elem.color = self.color
-    return elem
-end
-
 function SolidStone:colorChangeDueTemp(fieldClass)
     self.color[4] = 0.65 - fieldClass.insideTemp/250 + self.temp/250
     if self.color[4] < 0.3 then
