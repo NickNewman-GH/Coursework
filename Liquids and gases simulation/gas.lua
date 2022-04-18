@@ -211,6 +211,7 @@ function Gas:update(fieldClass, updateType, dt)
             fieldClass.field[self.y][self.x].temp = self.temp
             self.isUpdated = true
         end
+        fieldClass.field[self.y][self.x]:colorChangeDueTemp(fieldClass)
         return
     end
     self:colorChangeDueTemp(fieldClass)

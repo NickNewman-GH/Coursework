@@ -107,6 +107,7 @@ function Field:addElements()
             for j=-sideSize,sideSize do
                 if self.mouseFieldXPos+j <= self.width and self.mouseFieldXPos+j > 0 and self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] == 0 then
                     self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j] = self.createdElement(self.mouseFieldXPos+j, self.mouseFieldYPos+i)
+                    self.field[self.mouseFieldYPos+i][self.mouseFieldXPos+j]:colorChangeDueTemp(self)
                 end
             end
         end
